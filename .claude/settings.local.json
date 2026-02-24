@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs:*)",
+      "Bash(del \"c:\\\\Users\\\\jeff\\\\skill-samurai-academy\\\\src\\\\components\\\\api\\\\base44Client.jsx\")",
+      "Bash(echo:*)"
+    ]
+  }
+}
