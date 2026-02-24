@@ -28,7 +28,6 @@ export default function LocationImporter() {
 
   const parseCSV = (content) => {
     const lines = content.trim().split('\n');
-    const headers = lines[0].split(',').map(h => h.trim());
     const locations = [];
 
     for (let i = 1; i < lines.length; i++) {
@@ -77,7 +76,7 @@ export default function LocationImporter() {
         locations.map(async (loc, index) => {
           console.log(`Inserting location ${index + 1}:`, loc);
           const result = await supabase
-            .from('locations')
+            .from('franchise_locations')
             .insert([loc])
             .select();
           console.log(`Result for ${loc.name}:`, result);
@@ -128,7 +127,7 @@ export default function LocationImporter() {
       console.log('Inserting test location:', testLocation);
       
       const result = await supabase
-        .from('locations')
+        .from('franchise_locations')
         .insert([testLocation])
         .select();
       

@@ -97,7 +97,7 @@ export default function LocationFinder() {
                       </div>
                       <div>
                         <div className="font-semibold text-slate-900">{location.name}</div>
-                        <div className="text-sm text-slate-600">{location.country}</div>
+                        <div className="text-sm text-slate-600">{location.city ? `${location.city}, ` : ''}{location.country}</div>
                       </div>
                     </div>
                     <ArrowRight className="w-5 h-5 text-slate-400" />

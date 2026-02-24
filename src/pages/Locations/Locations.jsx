@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { supabase } from '@/lib/supabase/supabaseClient';
 import { useQuery } from '@tanstack/react-query';
-import { Search, MapPin, Globe, ArrowRight } from 'lucide-react';
+import { Search, MapPin, Globe, ArrowRight, AlertCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -22,6 +22,7 @@ function normalizeLocation(row) {
     slug,
     city: row.city || row.suburb || '',
     country: row.country || row.country_name || '',
+    hero_image_url: row.hero_image_url || '',
     location_photo_url: row.location_photo_url || row.photo_url || '',
     delivery_mode: row.delivery_mode || '',
     is_active: row.is_active ?? row.active ?? true,
@@ -31,7 +32,7 @@ function normalizeLocation(row) {
 export default function Locations() {
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { data: locations = [] } = useQuery({
+  const { data: locations = [], error, isLoading } = useQuery({
     queryKey: ['franchise_locations'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -83,10 +84,20 @@ export default function Locations() {
 
       {/* Locations Grid */}
       <div className="max-w-6xl mx-auto px-6 py-12">
+        {error && (
+          <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold text-red-900">Failed to load locations</p>
+              <p className="text-sm text-red-700 font-mono mt-1">{error.message}</p>
+            </div>
+          </div>
+        )}
+
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-2xl font-bold text-slate-900">
-              {filteredLocations.length} Location{filteredLocations.length !== 1 ? 's' : ''} Available
+              {isLoading ? 'Loading...' : `${filteredLocations.length} Location${filteredLocations.length !== 1 ? 's' : ''} Available`}
             </h2>
             <p className="text-slate-600 mt-1">Select a center to view programs and enroll</p>
           </div>
@@ -96,7 +107,20 @@ export default function Locations() {
           </Badge>
         </div>
 
-        {filteredLocations.length === 0 ? (
+        {isLoading ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map(i => (
+              <Card key={i} className="border-0 shadow-lg">
+                <div className="aspect-video bg-slate-200 animate-pulse" />
+                <CardContent className="p-6 space-y-3">
+                  <div className="h-5 bg-slate-200 rounded animate-pulse w-3/4" />
+                  <div className="h-4 bg-slate-100 rounded animate-pulse w-1/2" />
+                  <div className="h-10 bg-slate-100 rounded animate-pulse" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : filteredLocations.length === 0 ? (
           <Card className="border-0 shadow-lg">
             <CardContent className="text-center py-16">
               <MapPin className="w-16 h-16 text-slate-300 mx-auto mb-4" />
@@ -112,14 +136,14 @@ export default function Locations() {
             {filteredLocations.map((location) => (
               <Card key={location.id} className="group border-0 shadow-lg hover:shadow-xl transition-all overflow-hidden">
                 <div className="aspect-video relative overflow-hidden">
-                  {location.location_photo_url ? (
+                  {(location.hero_image_url || location.location_photo_url) ? (
                     <>
                       <img
-                        src={location.location_photo_url}
+                        src={location.hero_image_url || location.location_photo_url}
                         alt={location.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                     </>
                   ) : (
                     <>
@@ -140,7 +164,7 @@ export default function Locations() {
                   </h3>
                   <div className="flex items-center text-slate-600 text-sm mb-4">
                     <MapPin className="w-4 h-4 mr-2" />
-                    {location.country}
+                    {location.city ? `${location.city}, ` : ''}{location.country}
                   </div>
 
                   <Button

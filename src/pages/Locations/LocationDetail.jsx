@@ -4,9 +4,9 @@ import { createPageUrl } from '@/utils';
 import { api } from '@/api/apiClient';
 import { supabase } from '@/lib/supabase/supabaseClient';
 import { useQuery } from '@tanstack/react-query';
-import { 
-  MapPin, 
-  Code, 
+import {
+  MapPin,
+  Code,
   Rocket,
   GraduationCap,
   Trophy,
@@ -17,24 +17,6 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-
-function normalizeLocation(row) {
-  const name = row.name || row.location_name || row.franchise_name || '';
-  return {
-    ...row,
-    name,
-    slug:
-      row.slug ||
-      row.location_slug ||
-      name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
-    city: row.city || row.suburb || '',
-    country: row.country || row.country_name || '',
-    state_province: row.state_province || row.state || row.region || '',
-    address_line1: row.address_line1 || row.address || row.street_address || '',
-    postal_code: row.postal_code || row.zip || row.postcode || '',
-    phone: row.phone || row.phone_number || row.contact_phone || '',
-  };
-}
 
 function getLocationCopy(location) {
   const city = location.city || location.name;
@@ -55,9 +37,12 @@ export default function LocationDetail() {
   const { data: locations = [], isLoading } = useQuery({
     queryKey: ['location', slug],
     queryFn: async () => {
-      const { data, error } = await supabase.from('franchise_locations').select('*').eq('slug', slug);
+      const { data, error } = await supabase
+        .from('franchise_locations')
+        .select('*')
+        .eq('slug', slug);
       if (error) throw error;
-      return (data ?? []).map(normalizeLocation);
+      return data ?? [];
     },
     enabled: !!slug,
   });
