@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { api } from '@/api/apiClient';
 import { supabase } from '@/lib/supabase/supabaseClient';
 import { useQuery } from '@tanstack/react-query';
+import { useLocationData } from '@/lib/LocationContext';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Rocket } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -32,9 +33,13 @@ function normalizeLocation(row) {
 }
 
 export default function LocationCamps() {
+  // When rendered via /:locationSlug/camps the router provides location via context.
+  // When rendered via /LocationCamps?slug=...&locationId=... it falls back to Supabase fetch.
+  const contextLocation = useLocationData();
+
   const urlParams = new URLSearchParams(window.location.search);
   const slug = urlParams.get('slug');
-  const locationId = urlParams.get('locationId');
+  const locationId = urlParams.get('locationId') || contextLocation?.id;
 
   const [viewMode, setViewMode] = useState('cards');
   const [filters, setFilters] = useState({
@@ -55,10 +60,10 @@ export default function LocationCamps() {
       if (error) throw error;
       return (data ?? []).map(normalizeLocation);
     },
-    enabled: !!slug,
+    enabled: !!slug && !contextLocation,
   });
 
-  const location = locations[0];
+  const location = contextLocation ? normalizeLocation(contextLocation) : locations[0];
 
   const { data: camps = [], isLoading } = useQuery({
     queryKey: ['camps', locationId],

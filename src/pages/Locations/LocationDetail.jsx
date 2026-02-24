@@ -4,6 +4,7 @@ import { createPageUrl } from '@/utils';
 import { api } from '@/api/apiClient';
 import { supabase } from '@/lib/supabase/supabaseClient';
 import { useQuery } from '@tanstack/react-query';
+import { useLocationData } from '@/lib/LocationContext';
 import {
   MapPin,
   Code,
@@ -31,6 +32,10 @@ function getLocationCopy(location) {
 }
 
 export default function LocationDetail() {
+  // When rendered via /:locationSlug/* the router provides location via context.
+  // When rendered via /LocationDetail?slug=... it falls back to Supabase fetch.
+  const contextLocation = useLocationData();
+
   const urlParams = new URLSearchParams(window.location.search);
   const slug = urlParams.get('slug');
 
@@ -44,10 +49,10 @@ export default function LocationDetail() {
       if (error) throw error;
       return data ?? [];
     },
-    enabled: !!slug,
+    enabled: !!slug && !contextLocation,
   });
 
-  const location = locations[0];
+  const location = contextLocation || locations[0];
 
   const { data: programs = [] } = useQuery({
     queryKey: ['programs'],

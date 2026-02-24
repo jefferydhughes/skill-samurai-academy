@@ -10,6 +10,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import LocationRouter from './pages/Locations/LocationRouter';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -61,6 +62,16 @@ const AuthenticatedApp = () => {
           }
         />
       ))}
+      {/* Nested franchise location routes: /:locationSlug, /:locationSlug/camps, etc.
+          Must be after all named page routes so static routes win over dynamic ones. */}
+      <Route
+        path="/:locationSlug/*"
+        element={
+          <LayoutWrapper currentPageName="LocationDetail">
+            <LocationRouter />
+          </LayoutWrapper>
+        }
+      />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
