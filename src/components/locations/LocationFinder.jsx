@@ -8,19 +8,37 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
+function normalizeLocation(row) {
+  const name = row.name || row.location_name || row.franchise_name || '';
+  const slug =
+    row.slug ||
+    row.location_slug ||
+    name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+  return {
+    ...row,
+    name,
+    slug,
+    city: row.city || row.suburb || '',
+    country: row.country || row.country_name || '',
+    is_active: row.is_active ?? row.active ?? true,
+  };
+}
+
 export default function LocationFinder() {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   const { data: locations = [] } = useQuery({
-    queryKey: ['locations'],
+    queryKey: ['franchise_locations'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('locations')
-        .select('*')
-        .eq('is_active', true);
+        .from('franchise_locations')
+        .select('*');
       if (error) throw error;
-      return data ?? [];
+      return (data ?? [])
+        .map(normalizeLocation)
+        .filter((loc) => loc.is_active && loc.slug);
     },
   });
 
@@ -29,6 +47,7 @@ export default function LocationFinder() {
         const q = searchQuery.toLowerCase();
         return (
           loc.name?.toLowerCase().includes(q) ||
+          loc.city?.toLowerCase().includes(q) ||
           loc.country?.toLowerCase().includes(q) ||
           loc.slug?.toLowerCase().includes(q)
         );

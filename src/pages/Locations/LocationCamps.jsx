@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { api } from '@/api/apiClient';
+import { supabase } from '@/lib/supabase/supabaseClient';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Rocket } from 'lucide-react';
@@ -16,6 +17,19 @@ import SpotReservation from '../../components/camps/SpotReservation';
 import CampCategoryStrip from '../../components/camps/CampCategoryStrip';
 import MobileCampCard from '../../components/camps/MobileCampCard';
 import { List, LayoutGrid, Calendar as CalendarIcon, Search, X } from 'lucide-react';
+
+function normalizeLocation(row) {
+  const name = row.name || row.location_name || row.franchise_name || '';
+  return {
+    ...row,
+    name,
+    slug:
+      row.slug ||
+      row.location_slug ||
+      name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+    city: row.city || row.suburb || '',
+  };
+}
 
 export default function LocationCamps() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -36,7 +50,11 @@ export default function LocationCamps() {
 
   const { data: locations = [] } = useQuery({
     queryKey: ['location', slug],
-    queryFn: () => api.entities.Location.filter({ slug }),
+    queryFn: async () => {
+      const { data, error } = await supabase.from('franchise_locations').select('*').eq('slug', slug);
+      if (error) throw error;
+      return (data ?? []).map(normalizeLocation);
+    },
     enabled: !!slug,
   });
 
