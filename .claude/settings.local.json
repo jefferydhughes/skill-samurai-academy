@@ -3,7 +3,9 @@
     "allow": [
       "Bash(xargs:*)",
       "Bash(del \"c:\\\\Users\\\\jeff\\\\skill-samurai-academy\\\\src\\\\components\\\\api\\\\base44Client.jsx\")",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(npm run build:*)",
+      "Bash(node --input-type=module --eval:*)"
     ]
   }
 }
