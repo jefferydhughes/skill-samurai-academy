@@ -68,8 +68,8 @@ export default function Login() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to={createPageUrl('Home')} className="inline-flex items-center gap-3">
-            <img src="/logo.svg" alt="Skill Samurai Academy" className="w-10 h-10" />
-            <span className="text-xl font-bold text-slate-900">Skill Samurai Academy</span>
+            <img src="https://res.cloudinary.com/dr76535kj/image/upload/v1771936172/Untitled_design_geeauy.png" alt="Kitsune OS" className="w-10 h-10" />
+            <span className="text-xl font-bold text-slate-900">Kitsune OS</span>
           </Link>
           <p className="mt-2 text-slate-600">Your learning journey starts here</p>
         </div>

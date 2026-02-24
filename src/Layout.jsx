@@ -136,11 +136,11 @@ export default function Layout({ children, currentPageName }) {
           </Button>
           <Link to={createPageUrl('Home')} className="flex items-center gap-3 group">
             <img
-              src="/logo.svg"
-              alt="Skill Samurai"
+              src="https://res.cloudinary.com/dr76535kj/image/upload/v1771936172/Untitled_design_geeauy.png"
+              alt="Kitsune OS"
               className="w-9 h-9 object-contain group-hover:scale-105 transition-transform"
             />
-            <span className="text-base font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent hidden sm:inline">Skill Samurai</span>
+            <span className="text-base font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent hidden sm:inline">Kitsune OS</span>
           </Link>
         </div>
 

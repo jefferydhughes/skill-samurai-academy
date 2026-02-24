@@ -96,12 +96,12 @@ export default function Home() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
               <img
-                src="/logo.svg"
-                alt="Skill Samurai"
+                src="https://res.cloudinary.com/dr76535kj/image/upload/v1771936172/Untitled_design_geeauy.png"
+                alt="Kitsune OS"
                 className="w-9 h-9 object-contain"
               />
               <span className="text-lg font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
-                Skill Samurai
+                Kitsune OS
               </span>
             </div>
             {user ? (
