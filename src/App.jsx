@@ -6,7 +6,7 @@ import NavigationTracker from '@/lib/NavigationTracker'
 import { PWAProvider } from '@/lib/PWAContext'
 import PWAControls from '@/components/pwa/PWAControls'
 import { pagesConfig } from './pages.config'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -19,6 +19,11 @@ const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
 const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   <Layout currentPageName={currentPageName}>{children}</Layout>
   : <>{children}</>;
+
+const LegacyAuthLoginRedirect = () => {
+  const location = useLocation();
+  return <Navigate to={`/login${location.search}`} replace />;
+};
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -51,6 +56,7 @@ const AuthenticatedApp = () => {
           <MainPage />
         </LayoutWrapper>
       } />
+      <Route path="/auth/login" element={<LegacyAuthLoginRedirect />} />
       {Object.entries(Pages).map(([path, Page]) => (
         <Route
           key={path}

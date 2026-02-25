@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { appParams } from '@/lib/app-params';
-import { createPageUrl } from '@/utils';
 
 const { appId, token } = appParams;
 
@@ -57,7 +56,7 @@ export const api = {
         typeof redirectUrl === 'string' && redirectUrl.length > 0
           ? redirectUrl
           : window.location.pathname + window.location.search;
-      window.location.href = `${createPageUrl('Login')}?redirect=${encodeURIComponent(safeRedirectUrl)}`;
+      window.location.href = `/login?redirect=${encodeURIComponent(safeRedirectUrl)}`;
     }
   },
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { supabase } from '@/lib/supabase/supabaseClient';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
@@ -8,16 +8,40 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, GraduationCap } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
   const [signInForm, setSignInForm] = useState({ email: '', password: '' });
   const [signUpForm, setSignUpForm] = useState({ email: '', password: '', fullName: '' });
+  const defaultRedirectPath = createPageUrl('StudentPortal');
+
+  const getSafeRedirectPath = () => {
+    const redirectParam = new URLSearchParams(location.search).get('redirect');
+
+    if (!redirectParam || redirectParam === 'undefined' || redirectParam === 'null') {
+      return defaultRedirectPath;
+    }
+
+    if (redirectParam.startsWith('/')) {
+      return redirectParam;
+    }
+
+    try {
+      const redirectUrl = new URL(redirectParam);
+      if (redirectUrl.origin !== window.location.origin) {
+        return defaultRedirectPath;
+      }
+      return `${redirectUrl.pathname}${redirectUrl.search}${redirectUrl.hash}`;
+    } catch {
+      return defaultRedirectPath;
+    }
+  };
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -35,7 +59,7 @@ export default function Login() {
       return;
     }
 
-    navigate(createPageUrl('StudentPortal'));
+    navigate(getSafeRedirectPath(), { replace: true });
   };
 
   const handleSignUp = async (e) => {
@@ -49,6 +73,7 @@ export default function Login() {
       password: signUpForm.password,
       options: {
         data: { full_name: signUpForm.fullName },
+        emailRedirectTo: `${window.location.origin}${getSafeRedirectPath()}`,
       },
     });
 

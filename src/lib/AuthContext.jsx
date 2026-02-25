@@ -1,6 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { supabase } from '@/lib/supabase/supabaseClient';
-import { createPageUrl } from '@/utils';
 
 const AuthContext = createContext();
 
@@ -34,7 +33,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const navigateToLogin = () => {
-    window.location.href = createPageUrl('Login');
+    const redirectTo = window.location.pathname + window.location.search;
+    window.location.href = `/login?redirect=${encodeURIComponent(redirectTo)}`;
   };
 
   return (
