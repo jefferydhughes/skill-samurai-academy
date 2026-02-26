@@ -78,7 +78,13 @@ export default function Login() {
     });
 
     if (error) {
-      setError(error.message);
+      // "Database error trying to save new user" means a Supabase trigger is
+      // failing — surface a clear message instead of the raw technical error.
+      if (error.message?.toLowerCase().includes('database error')) {
+        setError('Account setup failed due to a server configuration issue. Please contact support.');
+      } else {
+        setError(error.message);
+      }
       setIsLoading(false);
       return;
     }
@@ -93,8 +99,8 @@ export default function Login() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to={createPageUrl('Home')} className="inline-flex items-center gap-3">
-            <img src="https://res.cloudinary.com/dr76535kj/image/upload/v1771936172/Untitled_design_geeauy.png" alt="Kitsune OS" className="w-10 h-10" />
-            <span className="text-xl font-bold text-slate-900">Kitsune OS</span>
+            <img src="https://res.cloudinary.com/dr76535kj/image/upload/v1771936172/Untitled_design_geeauy.png" alt="Skill Samurai Academy" className="w-10 h-10" />
+            <span className="text-xl font-bold text-slate-900">Skill Samurai Academy</span>
           </Link>
           <p className="mt-2 text-slate-600">Your learning journey starts here</p>
         </div>
