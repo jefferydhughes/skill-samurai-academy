@@ -8,6 +8,7 @@ import PWAControls from '@/components/pwa/PWAControls'
 import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
+import { createPageUrl } from '@/utils';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import LocationRouter from './pages/Locations/LocationRouter';
@@ -22,7 +23,7 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
 
 const LegacyAuthLoginRedirect = () => {
   const location = useLocation();
-  return <Navigate to={`/login${location.search}`} replace />;
+  return <Navigate to={`${createPageUrl('Login')}${location.search}`} replace />;
 };
 
 const AuthenticatedApp = () => {
