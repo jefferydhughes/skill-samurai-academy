@@ -6,6 +6,22 @@ import { VitePWA } from 'vite-plugin-pwa'
 // https://vite.dev/config/
 export default defineConfig({
   logLevel: 'info', // Show warnings for debugging
+  // Remap Supabase-Vercel integration env vars (SUPABASE_*) to VITE_* so
+  // the browser bundle can access them. VITE_* vars take priority if set.
+  define: {
+    'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(
+      process.env.VITE_SUPABASE_URL ||
+      process.env.SUPABASE_URL ||
+      process.env.NEXT_PUBLIC_SUPABASE_URL ||
+      'https://omgtqczbzmgvtwptdbxm.supabase.co'
+    ),
+    'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(
+      process.env.VITE_SUPABASE_ANON_KEY ||
+      process.env.SUPABASE_ANON_KEY ||
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+      ''
+    ),
+  },
   plugins: [
     react(),
     VitePWA({
