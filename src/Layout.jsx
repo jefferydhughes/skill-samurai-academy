@@ -43,7 +43,7 @@ const PUBLIC_PAGES = [
 ];
 
 // Pages that render full-screen with no layout chrome
-const FULLSCREEN_PAGES = ['KitsuneLesson2D', 'LessonPlayer', 'EpicModeEditor'];
+const FULLSCREEN_PAGES = ['KitsuneLesson2D', 'LessonPlayer', 'EpicModeEditor', 'Parents'];
 
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
