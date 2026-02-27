@@ -21,6 +21,7 @@ import PrivacyPolicy from './pages/Public/PrivacyPolicy.jsx';
 import TermsOfService from './pages/Public/TermsOfService.jsx';
 import Franchising from './pages/Franchising.jsx';
 import Parents from './pages/Public/Parents.jsx';
+import FranchiseOpportunities from './pages/Public/FranchiseOpportunities.jsx';
 
 // Student Portal
 import StudentPortal from './pages/Student/StudentPortal.jsx';
@@ -118,6 +119,7 @@ export const PAGES = {
   "TermsOfService": TermsOfService,
   "Franchising": Franchising,
   "Parents": Parents,
+  "FranchiseOpportunities": FranchiseOpportunities,
 
   // Student Portal
   "StudentPortal": StudentPortal,
