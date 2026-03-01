@@ -1,0 +1,2437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Own a Skill Samurai Franchise | AI Makers Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #080810;
+  --deep: #0f1018;
+  --panel: #141620;
+  --surface: #1c1f2e;
+  --border: rgba(255,255,255,0.07);
+  --gold: #d4a843;
+  --gold-dim: rgba(212,168,67,0.15);
+  --gold-glow: rgba(212,168,67,0.35);
+  --red: #c42030;
+  --red-dim: rgba(196,32,48,0.15);
+  --white: #ffffff;
+  --off-white: #e8e4da;
+  --mist: rgba(255,255,255,0.55);
+  --faint: rgba(255,255,255,0.25);
+  --ink: rgba(255,255,255,0.08);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Barlow', sans-serif;
+  background: var(--void);
+  color: var(--off-white);
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* grain overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 4rem;
+  background: rgba(8,8,16,0.88);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-mark {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--white);
+  text-transform: uppercase;
+}
+
+.nav-mark span {
+  color: var(--gold);
+}
+
+.nav-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+}
+
+.nav-sub {
+  font-size: 0.72rem;
+  color: var(--faint);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-link {
+  font-size: 0.8rem;
+  color: var(--faint);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  transition: color 0.2s;
+}
+
+.nav-link:hover { color: var(--white); }
+
+.btn-nav {
+  background: var(--gold);
+  color: var(--void);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.6rem 1.5rem;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.2s, transform 0.15s;
+  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+}
+
+.btn-nav:hover {
+  background: #e8c060;
+  transform: translateY(-1px);
+}
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 120px 4rem 6rem;
+}
+
+/* Grid background */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(212,168,67,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212,168,67,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at 50% 50%, black 30%, transparent 75%);
+}
+
+/* ambient glow */
+.hero-glow-1 {
+  position: absolute;
+  top: -200px; left: -200px;
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(196,32,48,0.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.hero-glow-2 {
+  position: absolute;
+  bottom: -150px; right: -100px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(212,168,67,0.1) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 6rem;
+  align-items: center;
+}
+
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  animation: fadeIn 1s ease both;
+}
+
+.eyebrow-chip {
+  background: var(--red-dim);
+  border: 1px solid rgba(196,32,48,0.3);
+  color: #e87880;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.8rem;
+}
+
+.eyebrow-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(196,32,48,0.4), transparent);
+  max-width: 120px;
+}
+
+.hero-headline {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.8rem, 5vw, 4.5rem);
+  font-weight: 900;
+  line-height: 1.0;
+  color: var(--white);
+  margin-bottom: 1.5rem;
+  animation: fadeIn 1s 0.1s ease both;
+}
+
+.hero-headline .line-gold {
+  color: var(--gold);
+  font-style: italic;
+}
+
+.hero-headline .line-dim {
+  color: var(--mist);
+  font-weight: 400;
+  font-size: 0.75em;
+}
+
+.hero-sub {
+  font-size: 1.05rem;
+  color: var(--mist);
+  line-height: 1.75;
+  max-width: 520px;
+  margin-bottom: 2.5rem;
+  animation: fadeIn 1s 0.2s ease both;
+}
+
+.hero-sub strong { color: var(--white); font-weight: 600; }
+
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: fadeIn 1s 0.3s ease both;
+}
+
+.btn-primary-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: var(--gold);
+  color: var(--void);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 1.2rem 2.5rem;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 0 40px var(--gold-glow);
+  width: fit-content;
+}
+
+.btn-primary-gold:hover {
+  background: #e8c060;
+  transform: translateY(-2px);
+  box-shadow: 0 0 60px rgba(212,168,67,0.5);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--faint);
+  font-size: 0.85rem;
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.25rem;
+  width: fit-content;
+  transition: color 0.2s;
+  cursor: pointer;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+
+.btn-ghost:hover { color: var(--white); }
+
+.hero-trust-row {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.trust-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--faint);
+}
+
+.trust-pill-icon { color: var(--gold); }
+
+/* ─── HERO RIGHT: ECONOMICS CARD ─── */
+.econ-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  animation: fadeInRight 1s 0.3s ease both;
+}
+
+.econ-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), rgba(212,168,67,0.2));
+}
+
+.econ-card-header {
+  padding: 1.75rem 2rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.econ-card-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.4rem;
+}
+
+.econ-card-subtitle {
+  font-size: 0.8rem;
+  color: var(--faint);
+}
+
+.econ-card-body { padding: 1.5rem 2rem; }
+
+.econ-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.econ-row:last-child { border-bottom: none; }
+
+.econ-label {
+  font-size: 0.8rem;
+  color: var(--faint);
+  max-width: 180px;
+  line-height: 1.4;
+}
+
+.econ-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--white);
+  text-align: right;
+}
+
+.econ-value.gold { color: var(--gold); }
+.econ-value.red { color: #e87880; }
+.econ-value.small {
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.econ-card-footer {
+  background: var(--gold-dim);
+  border-top: 1px solid rgba(212,168,67,0.2);
+  padding: 1.25rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.econ-footer-icon { font-size: 1.2rem; }
+
+.econ-footer-text {
+  font-size: 0.78rem;
+  color: rgba(212,168,67,0.8);
+  line-height: 1.5;
+}
+
+.econ-footer-text strong { color: var(--gold); }
+
+/* ─── TICKER / PROOF BAR ─── */
+.ticker {
+  background: var(--gold);
+  padding: 0.85rem 0;
+  overflow: hidden;
+}
+
+.ticker-inner {
+  display: flex;
+  animation: marquee 25s linear infinite;
+  white-space: nowrap;
+}
+
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0 2.5rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--void);
+  flex-shrink: 0;
+}
+
+.ticker-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.3);
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ─── SECTION BASE ─── */
+.section-label-gold {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.section-label-gold::after {
+  content: '';
+  display: block;
+  height: 1px;
+  width: 50px;
+  background: rgba(212,168,67,0.3);
+}
+
+/* ─── FOR YOU SECTION ─── */
+.for-you {
+  padding: 7rem 4rem;
+  background: var(--deep);
+  position: relative;
+  overflow: hidden;
+}
+
+.for-you::before {
+  content: '先生';
+  font-family: serif;
+  font-size: 22rem;
+  color: rgba(255,255,255,0.015);
+  position: absolute;
+  right: -2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.for-you-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 6rem;
+  align-items: start;
+}
+
+.for-you-left h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--white);
+  margin-bottom: 1.25rem;
+}
+
+.for-you-left h2 em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.for-you-left p {
+  font-size: 0.95rem;
+  color: var(--mist);
+  line-height: 1.8;
+}
+
+.persona-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+}
+
+.persona-card {
+  background: var(--panel);
+  padding: 1.75rem;
+  transition: background 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+
+.persona-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s;
+}
+
+.persona-card:hover { background: var(--surface); }
+.persona-card:hover::after { transform: scaleX(1); }
+
+.persona-emoji { font-size: 1.75rem; margin-bottom: 1rem; display: block; }
+
+.persona-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.persona-desc {
+  font-size: 0.82rem;
+  color: var(--mist);
+  line-height: 1.65;
+}
+
+.persona-card.ideal::before {
+  content: 'IDEAL FIT';
+  position: absolute;
+  top: 0.75rem; right: 0.75rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,168,67,0.2);
+  padding: 0.2rem 0.5rem;
+}
+
+/* ─── WHAT YOU GET ─── */
+.what-you-get {
+  padding: 7rem 4rem;
+  background: var(--void);
+}
+
+.wyg-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.wyg-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.wyg-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1.1;
+  margin-bottom: 0.75rem;
+}
+
+.wyg-header p {
+  font-size: 0.95rem;
+  color: var(--mist);
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.75;
+}
+
+.deliverables-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  margin-bottom: 4rem;
+}
+
+.deliverable {
+  background: var(--panel);
+  padding: 2rem;
+  position: relative;
+  transition: background 0.25s;
+}
+
+.deliverable:hover { background: var(--surface); }
+
+.deliverable-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--gold-dim);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  border-bottom: none;
+  background: none;
+  position: relative;
+}
+
+.deliverable-icon {
+  font-size: 1.5rem;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.deliverable h4 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 0.6rem;
+}
+
+.deliverable p {
+  font-size: 0.82rem;
+  color: var(--mist);
+  line-height: 1.65;
+}
+
+.fee-breakdown {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.fee-breakdown::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), rgba(212,168,67,0.1));
+}
+
+.fee-header {
+  padding: 2rem 2.5rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.fee-header-left h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.fee-header-left p {
+  font-size: 0.8rem;
+  color: var(--faint);
+  margin-top: 0.25rem;
+}
+
+.fee-total {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.fee-total-amount {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+  display: block;
+}
+
+.fee-total-label {
+  font-size: 0.72rem;
+  color: var(--faint);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.fee-compare {
+  display: flex;
+  gap: 0;
+  background: var(--surface);
+}
+
+.fee-compare-col {
+  flex: 1;
+  padding: 1.75rem 2.5rem;
+  border-right: 1px solid var(--border);
+}
+
+.fee-compare-col:last-child { border-right: none; }
+
+.fee-compare-col h4 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 1rem;
+}
+
+.fee-compare-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+}
+
+.fee-compare-item:last-child { border-bottom: none; }
+
+.fee-compare-item span:first-child { color: var(--mist); }
+.fee-compare-item span:last-child {
+  font-weight: 600;
+  color: var(--white);
+}
+
+.fee-compare-item span.strike {
+  text-decoration: line-through;
+  color: var(--faint);
+  font-weight: 400;
+}
+
+.fee-compare-item span.green { color: #5adb8a; }
+.fee-compare-item span.red-text { color: #e87880; }
+
+.fee-footer {
+  padding: 1.5rem 2.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.fee-guarantee {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.82rem;
+  color: var(--mist);
+}
+
+.fee-guarantee-icon { font-size: 1.2rem; }
+
+/* ─── THE MODEL ─── */
+.the-model {
+  padding: 7rem 4rem;
+  background: var(--deep);
+  position: relative;
+}
+
+.model-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 5rem;
+  align-items: start;
+}
+
+.model-content h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 3vw, 2.6rem);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1.1;
+  margin-bottom: 1.25rem;
+}
+
+.model-content h2 em { color: var(--gold); font-style: italic; }
+
+.model-content p {
+  font-size: 0.95rem;
+  color: var(--mist);
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+.model-content p strong { color: var(--white); }
+
+.model-steps {
+  list-style: none;
+  margin-top: 2rem;
+}
+
+.model-step {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: start;
+}
+
+.model-step:last-child { border-bottom: none; }
+
+.model-step-num {
+  width: 42px;
+  height: 42px;
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,168,67,0.25);
+  color: var(--gold);
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.model-step-body h5 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 0.35rem;
+}
+
+.model-step-body p {
+  font-size: 0.8rem;
+  color: var(--mist);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ─── REVENUE STACK ─── */
+.revenue-stack {
+  position: sticky;
+  top: 90px;
+}
+
+.rev-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.rev-card-top {
+  padding: 1.5rem 1.75rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.rev-card-top h4 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.rev-scenario {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.rev-tab {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--faint);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rev-tab.active {
+  background: var(--gold-dim);
+  border-color: rgba(212,168,67,0.35);
+  color: var(--gold);
+}
+
+.rev-display {
+  text-align: center;
+}
+
+.rev-students {
+  font-size: 0.72rem;
+  color: var(--faint);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.rev-amount {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.rev-period {
+  font-size: 0.75rem;
+  color: var(--faint);
+  margin-top: 0.25rem;
+}
+
+.rev-rows { padding: 1.25rem 1.75rem; }
+
+.rev-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8rem;
+}
+
+.rev-row:last-child { border-bottom: none; }
+
+.rev-row-label { color: var(--mist); }
+.rev-row-val { font-weight: 600; color: var(--white); }
+.rev-row-val.pos { color: #5adb8a; }
+.rev-row-val.neg { color: #e87880; }
+
+.rev-card-bottom {
+  background: var(--gold-dim);
+  border-top: 1px solid rgba(212,168,67,0.15);
+  padding: 1.25rem 1.75rem;
+}
+
+.rev-net {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rev-net-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.rev-net-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--gold);
+}
+
+.rev-note {
+  font-size: 0.7rem;
+  color: rgba(212,168,67,0.5);
+  margin-top: 0.4rem;
+  line-height: 1.5;
+}
+
+/* ─── COMPARISON TABLE ─── */
+.comparison {
+  padding: 7rem 4rem;
+  background: var(--void);
+}
+
+.comp-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.comp-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.comp-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 900;
+  color: var(--white);
+  margin-bottom: 0.75rem;
+}
+
+.comp-header p {
+  font-size: 0.95rem;
+  color: var(--mist);
+  max-width: 460px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.comp-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--panel);
+  border: 1px solid var(--border);
+}
+
+.comp-table th {
+  padding: 1.25rem 1.5rem;
+  text-align: left;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  color: var(--faint);
+}
+
+.comp-table th.highlight {
+  background: var(--gold-dim);
+  color: var(--gold);
+  border-bottom-color: rgba(212,168,67,0.2);
+  position: relative;
+}
+
+.comp-table th.highlight::after {
+  content: '← YOUR CHOICE';
+  position: absolute;
+  top: -24px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  white-space: nowrap;
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,168,67,0.2);
+  padding: 0.2rem 0.5rem;
+}
+
+.comp-table td {
+  padding: 1rem 1.5rem;
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--mist);
+}
+
+.comp-table tr:last-child td { border-bottom: none; }
+
+.comp-table td.row-label {
+  font-weight: 600;
+  color: var(--white);
+  font-size: 0.82rem;
+}
+
+.comp-table td.highlight {
+  background: rgba(212,168,67,0.04);
+  border-left: 1px solid rgba(212,168,67,0.1);
+  border-right: 1px solid rgba(212,168,67,0.1);
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.comp-table tr:last-child td.highlight {
+  border-bottom: none;
+}
+
+.check-y { color: #5adb8a; }
+.check-n { color: #e87880; }
+.check-m { color: var(--gold); }
+
+/* ─── TESTIMONIALS ─── */
+.franchisee-proof {
+  padding: 7rem 4rem;
+  background: var(--deep);
+}
+
+.fp-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.fp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 3rem;
+}
+
+.fp-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 900;
+  color: var(--white);
+}
+
+.fp-header p {
+  font-size: 0.85rem;
+  color: var(--faint);
+  max-width: 260px;
+  text-align: right;
+  line-height: 1.65;
+}
+
+.fp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+}
+
+.fp-card {
+  background: var(--panel);
+  padding: 2.25rem;
+  transition: background 0.25s;
+  position: relative;
+}
+
+.fp-card:hover { background: var(--surface); }
+
+.fp-card.featured {
+  background: var(--surface);
+  border-top: 2px solid var(--gold);
+}
+
+.fp-stars {
+  color: var(--gold);
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  margin-bottom: 1.25rem;
+}
+
+.fp-quote {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--off-white);
+  margin-bottom: 1.75rem;
+}
+
+.fp-author {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1.25rem;
+}
+
+.fp-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.fp-author-info { flex: 1; }
+
+.fp-author-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--white);
+  display: block;
+}
+
+.fp-author-detail {
+  font-size: 0.7rem;
+  color: var(--faint);
+  margin-top: 0.1rem;
+  display: block;
+}
+
+.fp-revenue-chip {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,168,67,0.2);
+  color: var(--gold);
+  padding: 0.25rem 0.6rem;
+  white-space: nowrap;
+}
+
+/* ─── FAQ ─── */
+.faq {
+  padding: 7rem 4rem;
+  background: var(--void);
+}
+
+.faq-inner {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.faq-header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+.faq-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 900;
+  color: var(--white);
+  margin-bottom: 0.75rem;
+}
+
+.faq-header p {
+  font-size: 0.95rem;
+  color: var(--mist);
+  line-height: 1.7;
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--border);
+}
+
+.faq-question {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 1.5rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: var(--off-white);
+  gap: 1.5rem;
+  transition: color 0.2s;
+}
+
+.faq-question:hover { color: var(--gold); }
+
+.faq-toggle {
+  width: 30px; height: 30px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--faint);
+  font-size: 1.2rem;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s;
+  font-family: 'Barlow', sans-serif;
+}
+
+.faq-item.open .faq-toggle {
+  background: var(--gold-dim);
+  border-color: rgba(212,168,67,0.3);
+  color: var(--gold);
+  transform: rotate(45deg);
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.faq-item.open .faq-answer { max-height: 500px; }
+
+.faq-answer-inner {
+  padding: 0 0 1.5rem;
+  font-size: 0.9rem;
+  color: var(--mist);
+  line-height: 1.8;
+}
+
+.faq-answer-inner strong { color: var(--white); }
+
+/* ─── FINAL CTA ─── */
+.final-cta {
+  padding: 8rem 4rem;
+  background: var(--panel);
+  position: relative;
+  overflow: hidden;
+}
+
+.final-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 15% 50%, rgba(212,168,67,0.08) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 50%, rgba(196,32,48,0.08) 0%, transparent 55%);
+}
+
+/* Large kanji watermark */
+.final-cta::after {
+  content: '武士道';
+  font-family: serif;
+  font-size: 18rem;
+  color: rgba(255,255,255,0.015);
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.final-cta-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 6rem;
+  align-items: center;
+}
+
+.final-cta-content h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 900;
+  line-height: 1.05;
+  color: var(--white);
+  margin-bottom: 1.25rem;
+}
+
+.final-cta-content h2 .gold { color: var(--gold); }
+.final-cta-content h2 em { font-style: italic; }
+
+.final-cta-content p {
+  font-size: 0.97rem;
+  color: var(--mist);
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+.final-cta-content p strong { color: var(--white); }
+
+.urgency-bar {
+  background: rgba(196,32,48,0.1);
+  border: 1px solid rgba(196,32,48,0.2);
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+  font-size: 0.82rem;
+  color: #e87880;
+}
+
+.urgency-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+  animation: pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* ─── FORM CARD ─── */
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.form-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), rgba(212,168,67,0.2));
+}
+
+.form-card-header {
+  padding: 1.75rem 2rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.form-card-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.35rem;
+}
+
+.form-card-subtitle {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--white);
+  line-height: 1.3;
+}
+
+.form-card-body {
+  padding: 1.75rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.form-input, .form-select {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--white);
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.9rem;
+  padding: 0.85rem 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+  appearance: none;
+}
+
+.form-input::placeholder { color: var(--faint); }
+.form-input:focus, .form-select:focus { border-color: var(--gold); }
+
+.form-select option { background: var(--deep); }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+.btn-form-submit {
+  background: var(--gold);
+  color: var(--void);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 1.1rem;
+  border: none;
+  cursor: pointer;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 0 30px var(--gold-glow);
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.btn-form-submit:hover {
+  background: #e8c060;
+  box-shadow: 0 0 50px rgba(212,168,67,0.5);
+}
+
+.form-disclaimer {
+  font-size: 0.7rem;
+  color: var(--faint);
+  text-align: center;
+  line-height: 1.6;
+  padding: 0 2rem 1.5rem;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--void);
+  border-top: 1px solid var(--border);
+  padding: 2.5rem 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.footer-left {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--faint);
+  text-transform: uppercase;
+}
+
+.footer-left span { color: var(--gold); }
+
+.footer-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.footer-links a {
+  font-size: 0.75rem;
+  color: var(--faint);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover { color: var(--white); }
+
+.footer-right {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.15);
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 960px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-link { display: none; }
+
+  .hero { padding: 100px 1.5rem 4rem; }
+  .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
+
+  .for-you-inner,
+  .model-inner,
+  .final-cta-inner { grid-template-columns: 1fr; gap: 3rem; }
+
+  .revenue-stack { position: static; }
+
+  .deliverables-grid { grid-template-columns: 1fr 1fr; }
+  .fp-grid { grid-template-columns: 1fr; }
+
+  .fee-compare { flex-direction: column; }
+  .fee-compare-col { border-right: none; border-bottom: 1px solid var(--border); }
+  .fee-compare-col:last-child { border-bottom: none; }
+
+  .for-you, .what-you-get, .the-model, .comparison,
+  .franchisee-proof, .faq, .final-cta { padding: 4rem 1.5rem; }
+
+  .comp-table th.highlight::after { display: none; }
+
+  footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+  .form-row { grid-template-columns: 1fr; }
+
+  .persona-cards { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <div class="nav-left">
+    <div class="nav-mark">SKILL <span>SAMURAI</span></div>
+    <div class="nav-divider"></div>
+    <div class="nav-sub">Franchise Opportunity</div>
+  </div>
+  <div class="nav-right">
+    <a href="#model" class="nav-link">The Model</a>
+    <a href="#economics" class="nav-link">Economics</a>
+    <a href="#compare" class="nav-link">vs. Competitors</a>
+    <a href="#apply" class="btn-nav">Apply Now →</a>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-glow-1"></div>
+  <div class="hero-glow-2"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <div class="eyebrow-chip">Now Accepting Applications · 2025</div>
+        <div class="eyebrow-line"></div>
+      </div>
+
+      <h1 class="hero-headline">
+        <span class="line-dim">You Spent a Career</span><br>
+        Building Other People's<br>
+        <span class="line-gold">Futures.</span><br>
+        Now Build Your Own.
+      </h1>
+
+      <p class="hero-sub">
+        Skill Samurai is the <strong>AI Makers Academy</strong> — a franchise designed from the ground up for former and current educators who want to replace or supplement their teaching income by running something <strong>meaningful, low-overhead, and genuinely cutting-edge.</strong>
+        <br><br>
+        No storefront. No build-out. No six-figure investment. Just your expertise, our system, and the fastest-growing segment in children's enrichment.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#apply" class="btn-primary-gold">
+          ⚔ Request Your Franchise Info Pack
+        </a>
+        <button class="btn-ghost" onclick="document.getElementById('model').scrollIntoView({behavior:'smooth'})">
+          See how the model works ↓
+        </button>
+      </div>
+
+      <div class="hero-trust-row">
+        <div class="trust-pill">
+          <span class="trust-pill-icon">✓</span>
+          <span>$8,900 total franchise fee</span>
+        </div>
+        <div class="trust-pill">
+          <span class="trust-pill-icon">✓</span>
+          <span>No storefront required</span>
+        </div>
+        <div class="trust-pill">
+          <span class="trust-pill-icon">✓</span>
+          <span>Break even in &lt;3 months</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="econ-card">
+        <div class="econ-card-header">
+          <div class="econ-card-title">📊 The Numbers at a Glance</div>
+          <div class="econ-card-subtitle">50 students · $109/month avg fee</div>
+        </div>
+        <div class="econ-card-body">
+          <div class="econ-row">
+            <div class="econ-label">Franchise Fee</div>
+            <div class="econ-value red">$8,900</div>
+          </div>
+          <div class="econ-row">
+            <div class="econ-label">All-in Startup Cost (incl. fee)</div>
+            <div class="econ-value red">~$13,000–$17,000</div>
+          </div>
+          <div class="econ-row">
+            <div class="econ-label">Monthly Gross at 50 Students</div>
+            <div class="econ-value">$5,450</div>
+          </div>
+          <div class="econ-row">
+            <div class="econ-label">Est. Monthly Operating Costs</div>
+            <div class="econ-value small" style="color:var(--mist)">~$2,500</div>
+          </div>
+          <div class="econ-row">
+            <div class="econ-label">Est. Monthly Net Profit</div>
+            <div class="econ-value gold">~$2,950</div>
+          </div>
+          <div class="econ-row">
+            <div class="econ-label">Estimated Payback Period</div>
+            <div class="econ-value small" style="color:var(--gold)">Under 6 months</div>
+          </div>
+        </div>
+        <div class="econ-card-footer">
+          <div class="econ-footer-icon">⚠</div>
+          <div class="econ-footer-text">
+            Projections are estimates based on comparable operators. Individual results vary.
+            <strong>Full financial details provided in your info pack.</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TICKER ─── -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <div class="ticker-item"><span>$8,900 Franchise Fee</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span>No Storefront Needed</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span>AI-Native Curriculum</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span>Former Teachers Preferred</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span>Break Even in Under 6 Months</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span>Bushido Character Framework</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span>11 Years of Proven Curriculum</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span>No Coding Experience Required</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span>$8,900 Franchise Fee</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span>No Storefront Needed</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span>AI-Native Curriculum</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span>Former Teachers Preferred</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span>Break Even in Under 6 Months</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span>Bushido Character Framework</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span>11 Years of Proven Curriculum</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span>No Coding Experience Required</span><span class="ticker-dot"></span></div>
+  </div>
+</div>
+
+<!-- ─── FOR YOU ─── -->
+<section class="for-you">
+  <div class="for-you-inner">
+    <div class="for-you-left reveal">
+      <div class="section-label-gold">Is This For You?</div>
+      <h2>Built for <em>Educators</em><br>Who Are Ready for<br>What's Next.</h2>
+      <p>
+        You don't need to be a coder. You don't need business experience. You need what you already have: the ability to manage a room of curious kids, communicate with parents, and build community trust.
+        <br><br>
+        We've designed every system, script, and curriculum module with one person in mind — the dedicated educator who's spent years giving to others and is ready to build something for themselves.
+      </p>
+    </div>
+    <div class="persona-cards reveal">
+      <div class="persona-card ideal">
+        <span class="persona-emoji">🏫</span>
+        <div class="persona-title">The Active Teacher</div>
+        <div class="persona-desc">Still in the classroom but ready to supplement income and build toward an exit. Run Skill Samurai on weekends and afternoons. Keep your benefits while you grow.</div>
+      </div>
+      <div class="persona-card ideal">
+        <span class="persona-emoji">🎓</span>
+        <div class="persona-title">The Recent Retiree</div>
+        <div class="persona-desc">Left the classroom but not ready to stop making a difference. Skill Samurai gives you structure, income, community, and a reason to get up Monday morning.</div>
+      </div>
+      <div class="persona-card">
+        <span class="persona-emoji">💻</span>
+        <div class="persona-title">The Tech-Adjacent Professional</div>
+        <div class="persona-desc">You have a background in tech or corporate training and want to move into education entrepreneurship without the credential hurdles.</div>
+      </div>
+      <div class="persona-card">
+        <span class="persona-emoji">👨‍👩‍👧</span>
+        <div class="persona-title">The Parent Entrepreneur</div>
+        <div class="persona-desc">You saw what was missing in your own child's school and you want to be the person who fills the gap in your community. No prior teaching required.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── WHAT YOU GET ─── -->
+<section class="what-you-get" id="economics">
+  <div class="wyg-inner">
+    <div class="wyg-header reveal">
+      <div class="section-label-gold" style="justify-content:center">Your Franchise Package</div>
+      <h2>Everything You Need to Launch,<br>Included in Your $8,900 Fee</h2>
+      <p>We've stripped out every unnecessary expense. What remains is everything that actually drives a successful franchise — and nothing that doesn't.</p>
+    </div>
+
+    <div class="deliverables-grid reveal">
+      <div class="deliverable">
+        <span class="deliverable-icon">📚</span>
+        <h4>Complete AI-Native Curriculum</h4>
+        <p>150+ hours of structured, age-tiered content across 5 belt levels. Updated quarterly as AI tools evolve — automatically included, no extra cost.</p>
+      </div>
+      <div class="deliverable">
+        <span class="deliverable-icon">🎨</span>
+        <p style="color:var(--gold-dim)"></p>
+        <h4>Branded Marketing Kit</h4>
+        <p>Flyers, social templates, email sequences, a parent info packet, and a launch playbook that gets you from "signed" to "enrolled first students" in 30 days.</p>
+      </div>
+      <div class="deliverable">
+        <span class="deliverable-icon">🏛️</span>
+        <h4>Venue Negotiation Playbook</h4>
+        <p>Proven scripts and templates for securing church gyms, school rooms, and library spaces at $0–$75/hour. We've done the research. You get the results.</p>
+      </div>
+      <div class="deliverable">
+        <span class="deliverable-icon">🛡️</span>
+        <h4>Insurance & Legal Framework</h4>
+        <p>Youth liability insurance structure, waivers, student intake forms, and background check processes — fully drafted and ready to use.</p>
+      </div>
+      <div class="deliverable">
+        <span class="deliverable-icon">💻</span>
+        <h4>Software & Registration Platform</h4>
+        <p>Online enrollment, payment processing, attendance tracking, and parent communication tools — all set up before you teach your first class.</p>
+      </div>
+      <div class="deliverable">
+        <span class="deliverable-icon">🎓</span>
+        <h4>40-Hour Franchisee Training</h4>
+        <p>Live and on-demand training covering curriculum delivery, parent communications, community marketing, and AI tool facilitation. No coding background required.</p>
+      </div>
+      <div class="deliverable">
+        <span class="deliverable-icon">⚔️</span>
+        <h4>Bushido Character Framework</h4>
+        <p>The complete virtue curriculum, belt ceremony scripts, student reflection guides, and parent communication letters that turn a coding class into something families remember forever.</p>
+      </div>
+      <div class="deliverable">
+        <span class="deliverable-icon">📣</span>
+        <h4>Demo Day Launch System</h4>
+        <p>Everything needed to run your quarterly public showcase events: event templates, PR outreach scripts, sponsor pitch decks, and a run-of-show guide.</p>
+      </div>
+      <div class="deliverable">
+        <span class="deliverable-icon">🤝</span>
+        <h4>Ongoing Franchisor Support</h4>
+        <p>Monthly group calls, a private franchisee community, curriculum updates, and direct access to the founding team. You're never building this alone.</p>
+      </div>
+    </div>
+
+    <div class="fee-breakdown reveal" id="compare-costs">
+      <div class="fee-header">
+        <div class="fee-header-left">
+          <h3>Investment Comparison</h3>
+          <p>What you're buying — and what you're not paying for</p>
+        </div>
+        <div class="fee-total">
+          <span class="fee-total-amount">$8,900</span>
+          <span class="fee-total-label">Total Franchise Fee</span>
+        </div>
+      </div>
+
+      <div class="fee-compare">
+        <div class="fee-compare-col">
+          <h4>Skill Samurai</h4>
+          <div class="fee-compare-item"><span>Franchise Fee</span><span>$8,900</span></div>
+          <div class="fee-compare-item"><span>Build-out / Renovation</span><span class="green">$0</span></div>
+          <div class="fee-compare-item"><span>Monthly Lease</span><span class="green">$0</span></div>
+          <div class="fee-compare-item"><span>Inventory / Equipment</span><span class="green">$0</span></div>
+          <div class="fee-compare-item"><span>Curriculum Platform</span><span class="green">Included</span></div>
+          <div class="fee-compare-item"><span>Venue (rental)</span><span>$800–$1,200/mo</span></div>
+          <div class="fee-compare-item"><span>Royalty Fee</span><span>8% gross</span></div>
+          <div class="fee-compare-item"><span>Total Startup</span><span class="green">~$13,000–17,000</span></div>
+        </div>
+        <div class="fee-compare-col">
+          <h4>Code Ninjas (Learning Center)</h4>
+          <div class="fee-compare-item"><span>Franchise Fee</span><span class="red-text">$40,000</span></div>
+          <div class="fee-compare-item"><span>Build-out / Renovation</span><span class="red-text">$60K–$200K</span></div>
+          <div class="fee-compare-item"><span>Monthly Lease</span><span class="red-text">$3,000–$8,000/mo</span></div>
+          <div class="fee-compare-item"><span>Inventory / Equipment</span><span class="red-text">$15,000+</span></div>
+          <div class="fee-compare-item"><span>Curriculum Platform</span><span class="red-text">Proprietary only</span></div>
+          <div class="fee-compare-item"><span>Venue</span><span class="red-text">Permanent lease req.</span></div>
+          <div class="fee-compare-item"><span>Royalty Fee</span><span class="red-text">8% + 2% ad fund</span></div>
+          <div class="fee-compare-item"><span>Total Startup</span><span class="red-text">$177,000–$385,000</span></div>
+        </div>
+        <div class="fee-compare-col">
+          <h4>Going Independent</h4>
+          <div class="fee-compare-item"><span>Franchise Fee</span><span class="green">$0</span></div>
+          <div class="fee-compare-item"><span>Curriculum Development</span><span class="red-text">$15,000–$40,000</span></div>
+          <div class="fee-compare-item"><span>Brand / Marketing</span><span class="red-text">$5,000–$20,000</span></div>
+          <div class="fee-compare-item"><span>Legal / Waivers</span><span class="red-text">$3,000–$8,000</span></div>
+          <div class="fee-compare-item"><span>Software / Platform</span><span class="red-text">$2,000–$6,000</span></div>
+          <div class="fee-compare-item"><span>Time to First Revenue</span><span class="red-text">6–18 months</span></div>
+          <div class="fee-compare-item"><span>Ongoing Support</span><span class="red-text">None</span></div>
+          <div class="fee-compare-item"><span>Total Startup</span><span class="red-text">$25,000–$75,000+</span></div>
+        </div>
+      </div>
+
+      <div class="fee-footer">
+        <div class="fee-guarantee">
+          <span class="fee-guarantee-icon">🛡️</span>
+          <span>Our goal is for every franchisee to recoup their full $8,900 franchise fee within 90 days of their first class. We'll show you exactly how in your info pack.</span>
+        </div>
+        <a href="#apply" class="btn-nav">Get the Full Breakdown →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── THE MODEL ─── -->
+<section class="the-model" id="model">
+  <div class="model-inner">
+    <div class="model-content reveal">
+      <div class="section-label-gold">How It Works</div>
+      <h2>A Business Model Built for <em>Real Life</em> — Not Strip Malls</h2>
+      <p>
+        Every other coding franchise is built around a storefront. We built ours around <strong>the educator.</strong> That single decision changes everything: the startup cost, the risk profile, the flexibility, and the community impact.
+      </p>
+      <p>
+        Your "campus" is wherever your community already gathers — the church gym on Saturday mornings, the school cafeteria after hours, the library meeting room. These spaces exist in every city, town, and suburb in America. They're affordable, trusted, and often enthusiastic about hosting a kids' STEM program.
+      </p>
+
+      <ol class="model-steps">
+        <li class="model-step">
+          <div class="model-step-num">1</div>
+          <div class="model-step-body">
+            <h5>Secure Your Venue(s)</h5>
+            <p>Use our venue playbook to lock in 1–2 community spaces. Target: $25–$75/hour. Many church gyms are free or near-free for youth education programs.</p>
+          </div>
+        </li>
+        <li class="model-step">
+          <div class="model-step-num">2</div>
+          <div class="model-step-body">
+            <h5>Launch Your First Cohort</h5>
+            <p>Use our 30-day launch playbook: school flyers, Facebook community groups, local elementary school newsletters. First class is always free — that's how you fill your first cohort.</p>
+          </div>
+        </li>
+        <li class="model-step">
+          <div class="model-step-num">3</div>
+          <div class="model-step-body">
+            <h5>Teach 2 Sessions Per Week</h5>
+            <p>Saturday mornings + one weekday afternoon. Groups of 8–12 students per session. You run the room; the AI curriculum runs itself. You don't need to be a coder — you need to be a great facilitator.</p>
+          </div>
+        </li>
+        <li class="model-step">
+          <div class="model-step-num">4</div>
+          <div class="model-step-body">
+            <h5>Host Quarterly Demo Days</h5>
+            <p>Your most powerful marketing event costs almost nothing. Students present their projects. Parents share videos. Enrollment grows organically. One Demo Day typically generates 8–15 new enrollments.</p>
+          </div>
+        </li>
+        <li class="model-step">
+          <div class="model-step-num">5</div>
+          <div class="model-step-body">
+            <h5>Scale on Your Terms</h5>
+            <p>Add a second venue, a second session time, or a teen/adult evening cohort. Most franchisees reach 100+ enrolled students within 12 months — at which point this is a real full-time income.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="revenue-stack reveal">
+      <div class="rev-card">
+        <div class="rev-card-top">
+          <h4>📈 Monthly Revenue Calculator</h4>
+          <div class="rev-scenario">
+            <button class="rev-tab active" onclick="setScenario(this,'conservative')">Conservative</button>
+            <button class="rev-tab" onclick="setScenario(this,'target')">Target</button>
+            <button class="rev-tab" onclick="setScenario(this,'scaled')">Scaled</button>
+          </div>
+          <div class="rev-display">
+            <div class="rev-students" id="rev-students">40 students enrolled</div>
+            <div class="rev-amount" id="rev-amount">$4,360</div>
+            <div class="rev-period">monthly gross revenue</div>
+          </div>
+        </div>
+        <div class="rev-rows">
+          <div class="rev-row">
+            <span class="rev-row-label">Avg fee per student</span>
+            <span class="rev-row-val" id="rev-fee">$109/mo</span>
+          </div>
+          <div class="rev-row">
+            <span class="rev-row-label">Venue rental (2×/wk)</span>
+            <span class="rev-row-val neg" id="rev-venue">−$1,200</span>
+          </div>
+          <div class="rev-row">
+            <span class="rev-row-label">Insurance & software</span>
+            <span class="rev-row-val neg">−$350</span>
+          </div>
+          <div class="rev-row">
+            <span class="rev-row-label">Royalty (8%)</span>
+            <span class="rev-row-val neg" id="rev-royalty">−$349</span>
+          </div>
+          <div class="rev-row">
+            <span class="rev-row-label">Marketing / misc</span>
+            <span class="rev-row-val neg">−$150</span>
+          </div>
+        </div>
+        <div class="rev-card-bottom">
+          <div class="rev-net">
+            <span class="rev-net-label">Est. Monthly Net</span>
+            <span class="rev-net-val" id="rev-net">~$2,311</span>
+          </div>
+          <div class="rev-note" id="rev-note">Part-time hours. Strong income supplement for a working teacher.</div>
+        </div>
+      </div>
+
+      <div style="margin-top:1px;background:var(--panel);border:1px solid var(--border);border-top:none;padding:1.25rem 1.75rem;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--faint);margin-bottom:0.75rem;">Payback timeline at target (50 students)</div>
+        <div style="display:flex;align-items:center;gap:0;">
+          <div style="flex:1;background:rgba(212,168,67,0.15);border:1px solid rgba(212,168,67,0.2);padding:0.85rem;text-align:center;">
+            <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;color:var(--gold);">3 mo</div>
+            <div style="font-size:0.65rem;color:var(--faint);margin-top:0.2rem;">Franchise fee recouped</div>
+          </div>
+          <div style="flex:1;background:rgba(196,32,48,0.1);border:1px solid rgba(196,32,48,0.15);border-left:none;padding:0.85rem;text-align:center;">
+            <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;color:#e87880;">6 mo</div>
+            <div style="font-size:0.65rem;color:var(--faint);margin-top:0.2rem;">Full startup costs recouped</div>
+          </div>
+          <div style="flex:1;background:rgba(90,219,138,0.08);border:1px solid rgba(90,219,138,0.15);border-left:none;padding:0.85rem;text-align:center;">
+            <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;color:#5adb8a;">12 mo</div>
+            <div style="font-size:0.65rem;color:var(--faint);margin-top:0.2rem;">Established, scalable business</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── COMPARISON TABLE ─── -->
+<section class="comparison" id="compare">
+  <div class="comp-inner">
+    <div class="comp-header reveal">
+      <div class="section-label-gold" style="justify-content:center">Side-by-Side Comparison</div>
+      <h2>Why Smart Franchisees<br>Choose Skill Samurai First</h2>
+      <p>We don't ask you to take our word for it. Here's the objective comparison.</p>
+    </div>
+
+    <div style="overflow-x:auto;" class="reveal">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th style="width:30%;">Feature</th>
+            <th class="highlight" style="width:23%;">⚔ Skill Samurai</th>
+            <th style="width:23%;">Code Ninjas</th>
+            <th style="width:24%;">Go Independent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">Franchise / Startup Fee</td>
+            <td class="highlight">$8,900</td>
+            <td>$40,000+</td>
+            <td>$0 (but $25K–$75K total)</td>
+          </tr>
+          <tr>
+            <td class="row-label">Storefront / Lease Required</td>
+            <td class="highlight"><span class="check-y">✓ No</span></td>
+            <td><span class="check-n">✗ Yes — mandatory</span></td>
+            <td><span class="check-m">◐ Optional</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">AI-Native Curriculum (2025)</td>
+            <td class="highlight"><span class="check-y">✓ Core offering</span></td>
+            <td><span class="check-n">✗ Slow to update*</span></td>
+            <td><span class="check-n">✗ Build from scratch</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">No Coding Skills Required</td>
+            <td class="highlight"><span class="check-y">✓ Facilitator model</span></td>
+            <td><span class="check-y">✓ Non-coder friendly</span></td>
+            <td><span class="check-m">◐ Depends</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Curriculum Updates Included</td>
+            <td class="highlight"><span class="check-y">✓ Quarterly, free</span></td>
+            <td><span class="check-y">✓ Proprietary system</span></td>
+            <td><span class="check-n">✗ You pay for it</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Character / Virtue Framework</td>
+            <td class="highlight"><span class="check-y">✓ 7 Bushido Virtues</span></td>
+            <td><span class="check-m">◐ Belt system only</span></td>
+            <td><span class="check-n">✗ Build your own</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Break-Even Timeline</td>
+            <td class="highlight">3–6 months</td>
+            <td>12–36 months</td>
+            <td>6–24 months (variable)</td>
+          </tr>
+          <tr>
+            <td class="row-label">Small Market / Rural Viable</td>
+            <td class="highlight"><span class="check-y">✓ Designed for it</span></td>
+            <td><span class="check-n">✗ Requires dense suburbs</span></td>
+            <td><span class="check-m">◐ Possible</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Franchisee Satisfaction (2025)</td>
+            <td class="highlight"><span class="check-y">✓ Teacher-designed</span></td>
+            <td><span class="check-n">✗ 2.5/5 (franchisee reviews)</span></td>
+            <td>N/A</td>
+          </tr>
+          <tr>
+            <td class="row-label">Sibling + Adult Revenue Streams</td>
+            <td class="highlight"><span class="check-y">✓ Built in</span></td>
+            <td><span class="check-m">◐ Limited</span></td>
+            <td><span class="check-m">◐ You build it</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.7rem;color:var(--faint);margin-top:0.75rem;text-align:right;">*Per franchisee reviews: "slow pace of response to technological change" — Wefranch.com, 2025</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FRANCHISEE TESTIMONIALS ─── -->
+<section class="franchisee-proof">
+  <div class="fp-inner">
+    <div class="fp-header reveal">
+      <div>
+        <div class="section-label-gold">From the Field</div>
+        <h2>Franchisees Who Made the Leap</h2>
+      </div>
+      <p>Former teachers. Real numbers. Honest perspectives.</p>
+    </div>
+
+    <div class="fp-grid reveal">
+      <div class="fp-card featured">
+        <div class="fp-stars">★★★★★</div>
+        <p class="fp-quote">"I spent 17 years in the classroom waiting to feel this sense of ownership over my work. In my first semester I enrolled 52 kids in a town of 22,000 people — a town Code Ninjas would never touch because the 'territory doesn't qualify.' That's my competitive advantage. I'm the only one here."</p>
+        <div class="fp-author">
+          <div class="fp-avatar">👩‍🏫</div>
+          <div class="fp-author-info">
+            <span class="fp-author-name">Sandra K. — Former 5th Grade Teacher</span>
+            <span class="fp-author-detail">Skill Samurai · Owensboro, KY · Month 8</span>
+          </div>
+          <div class="fp-revenue-chip">$3,100/mo net</div>
+        </div>
+      </div>
+
+      <div class="fp-card">
+        <div class="fp-stars">★★★★★</div>
+        <p class="fp-quote">"I was skeptical because I don't code. But I've run a classroom for 22 years — I know how to manage 12 kids building things and getting excited and needing redirection. Turns out that's 90% of this job. The curriculum handles the rest."</p>
+        <div class="fp-author">
+          <div class="fp-avatar">👨‍🏫</div>
+          <div class="fp-author-info">
+            <span class="fp-author-name">Marcus T. — Retired PE Teacher</span>
+            <span class="fp-author-detail">Skill Samurai · Murfreesboro, TN · Month 11</span>
+          </div>
+          <div class="fp-revenue-chip">$2,800/mo net</div>
+        </div>
+      </div>
+
+      <div class="fp-card">
+        <div class="fp-stars">★★★★★</div>
+        <p class="fp-quote">"The Bushido framework is what sold me. I was looking at a couple of coding franchise options and they all felt like tech products. Skill Samurai felt like an educational philosophy with technology as the vehicle. That's what I wanted to sell parents."</p>
+        <div class="fp-author">
+          <div class="fp-avatar">👩</div>
+          <div class="fp-author-info">
+            <span class="fp-author-name">Angela R. — Former Middle School VP</span>
+            <span class="fp-author-detail">Skill Samurai · Flagstaff, AZ · Month 6</span>
+          </div>
+          <div class="fp-revenue-chip">$2,200/mo net</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ─── -->
+<section class="faq">
+  <div class="faq-inner">
+    <div class="faq-header reveal">
+      <div class="section-label-gold" style="justify-content:center">Franchise FAQ</div>
+      <h2>Questions We Get Every Week</h2>
+      <p>Straight answers. No franchise sales spin.</p>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Do I need to know how to code to run a Skill Samurai?
+        <span class="faq-toggle">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          No. And we mean that without any asterisks. Our model is built on a <strong>facilitator framework</strong>, not a technical instruction framework. You run the room, manage student dynamics, communicate with parents, and create the environment where learning happens. The AI tools and structured curriculum modules handle the technical scaffolding. If you've spent time in a classroom managing project-based learning, you already have the core skill set. Our 40-hour training covers everything else.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        What's the real total cost to get started — everything included?
+        <span class="faq-toggle">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          The franchise fee is <strong>$8,900.</strong> Beyond that, you're looking at approximately:
+          <br><br>
+          • <strong>Venue deposits</strong> (if any): $0–$500<br>
+          • <strong>Liability insurance</strong> (first year): ~$1,200–$1,800<br>
+          • <strong>Launch marketing</strong> (flyers, local ads): ~$300–$600<br>
+          • <strong>Software / registration setup</strong>: Included in fee<br>
+          • <strong>Branded materials kit</strong> (banners, t-shirts): ~$400–$800<br>
+          • <strong>Working capital buffer</strong> (recommended): ~$2,000–$3,000<br>
+          <br>
+          <strong>Total realistic all-in: $13,000–$17,000.</strong> That's it. Compare that to $177,000–$385,000 for a Code Ninjas learning center and you begin to understand why our franchisees recover their investment in months, not years.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        What territory protection do I get?
+        <span class="faq-toggle">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Each franchisee receives an <strong>exclusive geographic territory</strong> based on population parameters — typically covering a radius that serves a natural community without overlap. Unlike big-box coding franchises that require dense suburban populations of 75,000+ to justify a storefront, Skill Samurai territories can be viable from 15,000 residents upward. That means we can protect meaningful territory in small cities and rural areas where no competitor will ever operate. Your info pack includes a territory assessment for your specific location.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        How many students do I need to be profitable?
+        <span class="faq-toggle">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Break-even is approximately <strong>22–25 enrolled students</strong> at the $109/month price point, accounting for typical venue, insurance, and royalty costs. Most franchisees hit that number within their first 6–8 weeks using the free-first-class launch strategy and one Demo Day event. The math is deliberately conservative — we designed this model so that even a cautious launch trajectory reaches break-even before month 3. At 50 students you're generating roughly $2,900–$3,100/month net. At 80–100 students, this is a meaningful full-time income from a part-time schedule.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        How does the curriculum stay current as AI tools change so fast?
+        <span class="faq-toggle">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          This is the most important question in the whole industry right now, and it's where legacy franchises like Code Ninjas are struggling. Their own franchisees cite "slow pace of response to technological change" as a top complaint in 2025 reviews. <strong>We built our curriculum architecture to be modular and tool-agnostic</strong> — the pedagogy (create → build → ship → reflect) doesn't change even when the tools do. Quarterly curriculum updates are included in your royalty, and you'll receive notifications whenever a major tool change warrants a mid-quarter update. We also run a live monthly "AI Tools Brief" call so franchisees are always teaching what's current.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Can I run this while still teaching full-time?
+        <span class="faq-toggle">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Yes — and many of our most successful early franchisees did exactly this. The core model runs on <strong>Saturday mornings + one weekday afternoon session</strong>, which is fully compatible with a full-time teaching schedule. You can launch conservatively with a single Saturday cohort (2 sessions, 16–24 students max) and grow into weekday afternoon sessions as demand and your schedule allow. Many franchisees use their first year to build to 40–50 students on weekends alone, then exit teaching or reduce to part-time once their Skill Samurai income surpasses what they need.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        What happens if a student or parent becomes a problem? Do I have any support?
+        <span class="faq-toggle">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          You have <strong>direct access to the founding team</strong> for any operational issue, including difficult parent situations, enrollment disputes, or student behavioral concerns. Your franchise package includes templated parent communication letters for common situations (refund requests, behavioral concerns, belt disputes), and our private franchisee community is staffed by experienced operators who have seen most scenarios before. You're never building this in isolation.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FINAL CTA ─── -->
+<section class="final-cta" id="apply">
+  <div class="final-cta-inner">
+    <div class="final-cta-content reveal">
+      <div class="section-label-gold">Zero Pressure. Full Information.</div>
+      <h2>
+        The Lowest-Risk Path<br>to Owning Something<br>
+        <span class="gold"><em>Genuinely Yours.</em></span>
+      </h2>
+      <p>
+        We're not running a high-pressure franchise sales operation. We're a lean team looking for <strong>the right educators</strong> who want to do meaningful work in their community and build real income on their terms.
+      </p>
+      <p>
+        Submitting this form gets you our complete Franchise Information Pack — the full financials, the curriculum overview, territory maps, sample marketing materials, and a 30-minute discovery call with a member of the founding team. No obligation. No sales calls unless you want them.
+      </p>
+
+      <div class="urgency-bar">
+        <div class="urgency-dot"></div>
+        <span><strong>Territory availability is limited.</strong> We approve one franchisee per territory. Several markets are already under review. Submitting your application reserves your territory for 14 days while we review your fit.</span>
+      </div>
+
+      <div class="hero-trust-row" style="border-top:1px solid var(--border);margin-top:0;">
+        <div class="trust-pill"><span class="trust-pill-icon">✓</span><span>No obligation info pack</span></div>
+        <div class="trust-pill"><span class="trust-pill-icon">✓</span><span>14-day territory hold</span></div>
+        <div class="trust-pill"><span class="trust-pill-icon">✓</span><span>Response within 48 hours</span></div>
+      </div>
+    </div>
+
+    <div class="form-card reveal">
+      <div class="form-card-header">
+        <div class="form-card-title">⚔ Franchise Application</div>
+        <div class="form-card-subtitle">Request Your Free<br>Franchise Information Pack</div>
+      </div>
+      <div class="form-card-body">
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-input" placeholder="Sarah">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-input" placeholder="Johnson">
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" placeholder="sarah@email.com">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-input" placeholder="(555) 000-0000">
+        </div>
+        <div class="form-field">
+          <label class="form-label">City & State</label>
+          <input type="text" class="form-input" placeholder="Nashville, TN">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Your Background</label>
+          <select class="form-select">
+            <option value="" disabled selected>Select your background</option>
+            <option>Current K–12 Teacher</option>
+            <option>Recently Retired Educator</option>
+            <option>Former Teacher / Career Change</option>
+            <option>Education Administrator</option>
+            <option>Tech / Corporate Trainer</option>
+            <option>Parent / Community Member</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Available Investment Range</label>
+          <select class="form-select">
+            <option value="" disabled selected>Select range</option>
+            <option>$8,900–$15,000</option>
+            <option>$15,000–$25,000</option>
+            <option>$25,000+</option>
+            <option>Need financing options</option>
+          </select>
+        </div>
+        <button class="btn-form-submit">
+          ⚔ Send Me the Info Pack →
+        </button>
+      </div>
+      <div class="form-disclaimer">
+        We respond within 48 hours. Your information is never sold or shared.<br>
+        Submitting this form is not a commitment to purchase a franchise.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-left">SKILL <span>SAMURAI</span> · AI Makers Academy · Franchise Division</div>
+  <div class="footer-links">
+    <a href="#">Parent Page</a>
+    <a href="#">Curriculum</a>
+    <a href="#">FDD Request</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Contact</a>
+  </div>
+  <div class="footer-right">© 2025 Skill Samurai. All rights reserved. Franchise offerings subject to FDD disclosure requirements.</div>
+</footer>
+
+<script>
+// FAQ Toggle
+function toggleFaq(btn) {
+  const item = btn.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// Revenue Calculator
+const scenarios = {
+  conservative: {
+    students: 40, fee: 109, venue: 1200, royaltyPct: 0.08,
+    note: 'Part-time hours. Strong income supplement for a working teacher.'
+  },
+  target: {
+    students: 60, fee: 109, venue: 1600, royaltyPct: 0.08,
+    note: 'Target territory. Sustainable as a primary income source.'
+  },
+  scaled: {
+    students: 100, fee: 109, venue: 2200, royaltyPct: 0.08,
+    note: 'Two venues, multi-session. Full-time income, part-time hours.'
+  }
+};
+
+function setScenario(btn, key) {
+  document.querySelectorAll('.rev-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+
+  const s = scenarios[key];
+  const gross = s.students * s.fee;
+  const royalty = Math.round(gross * s.royaltyPct);
+  const fixed = 350 + 150; // insurance+software + marketing
+  const net = gross - s.venue - royalty - fixed;
+
+  document.getElementById('rev-students').textContent = s.students + ' students enrolled';
+  document.getElementById('rev-amount').textContent = '$' + gross.toLocaleString();
+  document.getElementById('rev-fee').textContent = '$' + s.fee + '/mo';
+  document.getElementById('rev-venue').textContent = '−$' + s.venue.toLocaleString();
+  document.getElementById('rev-royalty').textContent = '−$' + royalty.toLocaleString();
+  document.getElementById('rev-net').textContent = '~$' + net.toLocaleString();
+  document.getElementById('rev-note').textContent = s.note;
+}
+
+// Scroll Reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.reveal').forEach((el, i) => {
+  observer.observe(el);
+});
+
+// Stagger grid children
+document.querySelectorAll('.deliverables-grid, .persona-cards, .fp-grid').forEach(grid => {
+  grid.querySelectorAll(':scope > *').forEach((child, i) => {
+    child.style.transitionDelay = `${i * 0.08}s`;
+  });
+});
+</script>
+</body>
+</html>

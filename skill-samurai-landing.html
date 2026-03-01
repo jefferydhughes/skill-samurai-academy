@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill Samurai | AI Makers Academy for Kids</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d0d0d;
+    --paper: #f5f0e8;
+    --red: #c8202c;
+    --red-dark: #9a1520;
+    --gold: #c9962a;
+    --gold-light: #e8c46a;
+    --slate: #2a3240;
+    --mist: #e8e2d6;
+    --white: #ffffff;
+    --shadow: rgba(13,13,13,0.15);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE TEXTURE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 3rem;
+    background: rgba(245,240,232,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(13,13,13,0.08);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .nav-mon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .nav-wordmark {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+  }
+
+  .nav-wordmark span {
+    display: block;
+    font-size: 0.55rem;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .nav-cta {
+    background: var(--red);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: 0.04em;
+    padding: 0.65rem 1.5rem;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s, transform 0.15s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+
+  .nav-cta:hover { background: var(--red-dark); transform: translateY(-1px); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+    padding-top: 70px;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5rem 4rem 5rem 5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--ink);
+    color: var(--gold-light);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    margin-bottom: 2rem;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+    width: fit-content;
+    animation: fadeSlideDown 0.8s ease both;
+  }
+
+  .hero-badge::before {
+    content: '⚔';
+    font-size: 0.9rem;
+  }
+
+  .hero-headline {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2.6rem, 5vw, 4.2rem);
+    font-weight: 900;
+    line-height: 1.0;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    animation: fadeSlideDown 0.9s 0.1s ease both;
+  }
+
+  .hero-headline .accent {
+    color: var(--red);
+    display: block;
+  }
+
+  .hero-headline .thin {
+    font-weight: 700;
+    color: var(--slate);
+  }
+
+  .hero-subhead {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    color: var(--slate);
+    line-height: 1.55;
+    margin-bottom: 0.75rem;
+    font-style: italic;
+    animation: fadeSlideDown 1s 0.2s ease both;
+  }
+
+  .hero-body {
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.7;
+    max-width: 480px;
+    margin-bottom: 2.5rem;
+    animation: fadeSlideDown 1s 0.3s ease both;
+  }
+
+  .hero-body strong { color: var(--ink); font-weight: 700; }
+
+  .hero-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    animation: fadeSlideDown 1s 0.4s ease both;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--red);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+    padding: 1.1rem 2.4rem;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    box-shadow: 4px 4px 0 var(--red-dark);
+    width: fit-content;
+  }
+
+  .btn-primary:hover {
+    background: var(--red-dark);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--red-dark);
+  }
+
+  .btn-primary .arrow { transition: transform 0.2s; }
+  .btn-primary:hover .arrow { transform: translateX(4px); }
+
+  .hero-trust {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.82rem;
+    color: #666;
+  }
+
+  .hero-trust-icons {
+    display: flex;
+    gap: -4px;
+  }
+
+  .trust-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--paper);
+    background: var(--slate);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: var(--gold-light);
+    font-weight: 700;
+    margin-left: -6px;
+  }
+
+  .trust-avatar:first-child { margin-left: 0; }
+
+  /* ─── HERO RIGHT ─── */
+  .hero-right {
+    position: relative;
+    background: var(--ink);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-right::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 40%, rgba(200, 32, 44, 0.35) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(201, 150, 42, 0.2) 0%, transparent 50%);
+  }
+
+  .hero-visual {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 3rem;
+  }
+
+  .mon-large {
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 2rem;
+    animation: float 4s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .project-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    max-width: 340px;
+    margin: 0 auto;
+  }
+
+  .project-card {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: left;
+    backdrop-filter: blur(10px);
+    animation: fadeSlideUp 1s ease both;
+  }
+
+  .project-card:nth-child(2) { animation-delay: 0.15s; }
+  .project-card:nth-child(3) { animation-delay: 0.3s; }
+  .project-card:nth-child(4) { animation-delay: 0.45s; }
+
+  .project-card-emoji { font-size: 1.5rem; margin-bottom: 0.4rem; }
+
+  .project-card-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 0.2rem;
+  }
+
+  .project-card-sub {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .project-card-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--ink);
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.4rem;
+    border-radius: 2px;
+    margin-top: 0.5rem;
+  }
+
+  .hero-stat-row {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .hero-stat {
+    text-align: center;
+  }
+
+  .hero-stat-num {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--gold-light);
+    display: block;
+    line-height: 1;
+  }
+
+  .hero-stat-label {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 0.3rem;
+    display: block;
+  }
+
+  /* ─── SECTION SHARED ─── */
+  section { position: relative; }
+
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-label::after {
+    content: '';
+    display: block;
+    height: 1px;
+    width: 40px;
+    background: var(--gold);
+    opacity: 0.5;
+  }
+
+  /* ─── PROBLEM BAR ─── */
+  .problem-bar {
+    background: var(--slate);
+    color: var(--white);
+    padding: 1.75rem 5rem;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    overflow: hidden;
+  }
+
+  .problem-bar-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .problem-bar-items {
+    display: flex;
+    gap: 3rem;
+    animation: marquee 22s linear infinite;
+    white-space: nowrap;
+  }
+
+  .problem-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.75);
+    flex-shrink: 0;
+  }
+
+  .problem-item::before {
+    content: '✗';
+    color: var(--red);
+    font-weight: 900;
+    font-size: 1rem;
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ─── BENEFITS ─── */
+  .benefits {
+    padding: 7rem 5rem;
+    background: var(--paper);
+  }
+
+  .benefits-intro {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 5rem;
+  }
+
+  .benefits-intro h2 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    color: var(--ink);
+  }
+
+  .benefits-intro p {
+    font-size: 1.05rem;
+    color: #555;
+    line-height: 1.7;
+  }
+
+  .benefit-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-bottom: 1px;
+    min-height: 480px;
+    border: 1px solid rgba(13,13,13,0.1);
+  }
+
+  .benefit-block + .benefit-block { margin-top: 4rem; }
+
+  .benefit-block.reverse { direction: rtl; }
+  .benefit-block.reverse > * { direction: ltr; }
+
+  .benefit-visual {
+    background: var(--ink);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 380px;
+  }
+
+  .benefit-visual-1::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 40% 50%, rgba(200,32,44,0.4) 0%, transparent 65%);
+  }
+
+  .benefit-visual-2::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 60% 40%, rgba(201,150,42,0.35) 0%, transparent 65%);
+  }
+
+  .benefit-visual-3::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 60%, rgba(42,50,64,0.8) 0%, transparent 50%),
+                radial-gradient(ellipse at 20% 30%, rgba(200,32,44,0.3) 0%, transparent 60%);
+  }
+
+  .benefit-visual-inner {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 2.5rem;
+  }
+
+  .benefit-icon-large {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 0 20px rgba(255,255,255,0.2));
+  }
+
+  .belt-display {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .belt {
+    padding: 0.35rem 0.9rem;
+    border-radius: 2px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .belt-white { background: rgba(255,255,255,0.9); color: var(--ink); }
+  .belt-yellow { background: #e8c142; color: var(--ink); }
+  .belt-green { background: #3a7d44; color: var(--white); }
+  .belt-blue { background: #2563a8; color: var(--white); }
+  .belt-black { background: var(--ink); color: var(--gold-light); border: 1px solid var(--gold-light); }
+
+  .virtue-list {
+    list-style: none;
+    text-align: left;
+    display: inline-block;
+  }
+
+  .virtue-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: rgba(255,255,255,0.8);
+    font-size: 0.875rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .virtue-list li:last-child { border-bottom: none; }
+
+  .virtue-kanji {
+    font-size: 1.1rem;
+    color: var(--gold-light);
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .benefit-content {
+    padding: 3.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--white);
+  }
+
+  .benefit-num {
+    font-family: 'Cinzel', serif;
+    font-size: 5rem;
+    font-weight: 900;
+    color: var(--mist);
+    line-height: 1;
+    margin-bottom: -1rem;
+    display: block;
+  }
+
+  .benefit-content h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.7rem;
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+
+  .benefit-content h3 em {
+    font-style: normal;
+    color: var(--red);
+  }
+
+  .benefit-content p {
+    font-size: 0.975rem;
+    color: #555;
+    line-height: 1.75;
+    margin-bottom: 1.5rem;
+  }
+
+  .benefit-content p strong {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  .benefit-proof-box {
+    background: var(--paper);
+    border-left: 3px solid var(--gold);
+    padding: 1rem 1.25rem;
+    margin-top: 0.5rem;
+  }
+
+  .benefit-proof-box p {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--slate);
+    margin: 0;
+  }
+
+  .benefit-proof-box cite {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-style: normal;
+    font-size: 0.72rem;
+    color: #888;
+    margin-top: 0.4rem;
+    letter-spacing: 0.05em;
+  }
+
+  .check-list {
+    list-style: none;
+    margin-top: 1.25rem;
+  }
+
+  .check-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    font-size: 0.9rem;
+    color: #444;
+    padding: 0.35rem 0;
+  }
+
+  .check-list li::before {
+    content: '✓';
+    color: var(--gold);
+    font-weight: 900;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    margin-top: 0.05rem;
+  }
+
+  /* ─── HOW IT WORKS ─── */
+  .how-it-works {
+    background: var(--ink);
+    padding: 7rem 5rem;
+    color: var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .how-it-works::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 10% 90%, rgba(200,32,44,0.2) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 10%, rgba(201,150,42,0.15) 0%, transparent 50%);
+  }
+
+  .hiw-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .hiw-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .hiw-header h2 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 900;
+    color: var(--white);
+    margin-bottom: 0.75rem;
+  }
+
+  .hiw-header p {
+    color: rgba(255,255,255,0.6);
+    font-size: 1rem;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    position: relative;
+  }
+
+  .steps-grid::before {
+    content: '';
+    position: absolute;
+    top: 38px;
+    left: calc(12.5% + 24px);
+    right: calc(12.5% + 24px);
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold) 0%, rgba(201,150,42,0.3) 100%);
+  }
+
+  .step {
+    text-align: center;
+    padding: 0 1.5rem;
+    position: relative;
+  }
+
+  .step-num {
+    width: 52px;
+    height: 52px;
+    background: var(--red);
+    color: var(--white);
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    position: relative;
+    z-index: 2;
+  }
+
+  .step h4 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 0.6rem;
+  }
+
+  .step p {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.6;
+  }
+
+  /* ─── SOCIAL PROOF ─── */
+  .social-proof {
+    padding: 7rem 5rem;
+    background: var(--paper);
+  }
+
+  .proof-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .proof-header h2 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 900;
+    color: var(--ink);
+    margin-bottom: 0.75rem;
+  }
+
+  .proof-header p {
+    font-size: 1rem;
+    color: #666;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto 5rem;
+  }
+
+  .testimonial {
+    background: var(--white);
+    border: 1px solid rgba(13,13,13,0.08);
+    padding: 2rem;
+    position: relative;
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+
+  .testimonial:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px var(--shadow);
+  }
+
+  .testimonial.featured {
+    background: var(--ink);
+    border-color: var(--gold);
+    grid-column: span 2;
+  }
+
+  .stars {
+    color: var(--gold);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    letter-spacing: 2px;
+  }
+
+  .testimonial-text {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+  }
+
+  .testimonial.featured .testimonial-text {
+    font-size: 1.2rem;
+    color: var(--white);
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .author-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--slate);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .testimonial.featured .author-avatar { background: rgba(255,255,255,0.1); }
+
+  .author-info { flex: 1; }
+
+  .author-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--ink);
+    display: block;
+  }
+
+  .testimonial.featured .author-name { color: var(--gold-light); }
+
+  .author-detail {
+    font-size: 0.72rem;
+    color: #888;
+    display: block;
+    margin-top: 0.15rem;
+  }
+
+  .testimonial.featured .author-detail { color: rgba(255,255,255,0.45); }
+
+  .author-belt {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .testimonial.featured .author-belt {
+    background: rgba(255,255,255,0.1);
+    color: var(--gold-light);
+  }
+
+  /* ─── TRUST BADGES ─── */
+  .trust-strip {
+    background: var(--mist);
+    padding: 2.5rem 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4rem;
+    flex-wrap: wrap;
+  }
+
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--slate);
+  }
+
+  .trust-item-icon {
+    font-size: 1.4rem;
+  }
+
+  .trust-item-text {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    line-height: 1.3;
+  }
+
+  .trust-item-text span {
+    display: block;
+    font-weight: 400;
+    color: #888;
+    font-size: 0.7rem;
+    letter-spacing: 0;
+  }
+
+  /* ─── RESULTS COUNTER ─── */
+  .results-section {
+    background: var(--red);
+    color: var(--white);
+    padding: 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .results-section::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 400px;
+    height: 400px;
+    border: 60px solid rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+
+  .results-section::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: -60px;
+    width: 350px;
+    height: 350px;
+    border: 50px solid rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+
+  .results-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .results-inner h2 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-weight: 900;
+    margin-bottom: 3rem;
+    opacity: 0.9;
+  }
+
+  .results-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+
+  .result-stat {
+    border-top: 2px solid rgba(255,255,255,0.2);
+    padding-top: 1.5rem;
+  }
+
+  .result-stat-num {
+    font-family: 'Cinzel', serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--gold-light);
+  }
+
+  .result-stat-text {
+    font-size: 0.78rem;
+    opacity: 0.7;
+    line-height: 1.4;
+  }
+
+  /* ─── FAQ ─── */
+  .faq {
+    padding: 7rem 5rem;
+    background: var(--white);
+  }
+
+  .faq-inner {
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  .faq-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+  }
+
+  .faq-header h2 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 900;
+    color: var(--ink);
+    margin-bottom: 0.75rem;
+  }
+
+  .faq-header p {
+    color: #666;
+    font-size: 0.975rem;
+    line-height: 1.7;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--mist);
+  }
+
+  .faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 1.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink);
+    gap: 1rem;
+    transition: color 0.2s;
+  }
+
+  .faq-question:hover { color: var(--red); }
+
+  .faq-toggle {
+    width: 28px;
+    height: 28px;
+    background: var(--mist);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: var(--slate);
+    flex-shrink: 0;
+    transition: background 0.2s, transform 0.3s;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  }
+
+  .faq-item.open .faq-toggle {
+    background: var(--red);
+    color: var(--white);
+    transform: rotate(45deg);
+  }
+
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+
+  .faq-item.open .faq-answer { max-height: 400px; }
+
+  .faq-answer-inner {
+    padding: 0 0 1.5rem 0;
+    font-size: 0.935rem;
+    color: #555;
+    line-height: 1.75;
+  }
+
+  .faq-answer-inner strong { color: var(--ink); }
+
+  /* ─── CTA SECTION ─── */
+  .cta-section {
+    background: var(--ink);
+    padding: 7rem 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: '武';
+    font-family: serif;
+    font-size: 28rem;
+    color: rgba(255,255,255,0.02);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    line-height: 1;
+  }
+
+  .cta-inner {
+    max-width: 780px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .cta-inner h2 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 1.25rem;
+  }
+
+  .cta-inner h2 .gold { color: var(--gold-light); }
+
+  .cta-inner p {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.6);
+    max-width: 540px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+  }
+
+  .cta-form {
+    display: flex;
+    gap: 0.75rem;
+    max-width: 500px;
+    margin: 0 auto 1.25rem;
+  }
+
+  .cta-input {
+    flex: 1;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    padding: 1rem 1.25rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .cta-input::placeholder { color: rgba(255,255,255,0.35); }
+  .cta-input:focus { border-color: var(--gold); }
+
+  .cta-submit {
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 1rem 1.75rem;
+    cursor: pointer;
+    white-space: nowrap;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.2s;
+  }
+
+  .cta-submit:hover { background: var(--red-dark); }
+
+  .cta-disclaimer {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.3);
+    line-height: 1.6;
+  }
+
+  .cta-alt-options {
+    margin-top: 3.5rem;
+    padding-top: 3rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .cta-alt-options h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 1.5rem;
+  }
+
+  .alt-cta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .alt-cta {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 1.25rem;
+    text-align: left;
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s;
+    display: block;
+    cursor: pointer;
+  }
+
+  .alt-cta:hover {
+    background: rgba(255,255,255,0.09);
+    border-color: rgba(255,255,255,0.2);
+  }
+
+  .alt-cta-icon { font-size: 1.3rem; margin-bottom: 0.5rem; display: block; }
+
+  .alt-cta-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--white);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .alt-cta-sub {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.4;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: #080808;
+    color: rgba(255,255,255,0.35);
+    padding: 2.5rem 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .footer-links a {
+    color: rgba(255,255,255,0.3);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: rgba(255,255,255,0.6); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { min-height: 400px; }
+    .hero-left { padding: 3rem 2rem; }
+    .benefit-block { grid-template-columns: 1fr; }
+    .benefit-block.reverse { direction: ltr; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .testimonial.featured { grid-column: auto; }
+    .steps-grid { grid-template-columns: 1fr 1fr; }
+    .steps-grid::before { display: none; }
+    .results-stats { grid-template-columns: 1fr 1fr; }
+    .alt-cta-grid { grid-template-columns: 1fr; }
+    nav { padding: 1rem 1.5rem; }
+    .benefits, .social-proof, .faq, .cta-section, .how-it-works { padding: 4rem 1.5rem; }
+    .problem-bar { padding: 1.5rem; gap: 1rem; }
+    .trust-strip { padding: 2rem 1.5rem; gap: 2rem; }
+    .results-section { padding: 3rem 1.5rem; }
+    footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+    .cta-form { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <div class="nav-logo">
+    <svg class="nav-mon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="40" cy="40" r="38" fill="#0d0d0d" stroke="#c9962a" stroke-width="2"/>
+      <path d="M40 12 L55 30 L68 28 L58 42 L65 58 L50 52 L40 68 L30 52 L15 58 L22 42 L12 28 L25 30 Z" fill="none" stroke="#c8202c" stroke-width="2" stroke-linejoin="round"/>
+      <circle cx="40" cy="40" r="8" fill="#c9962a"/>
+      <path d="M34 40 L38 44 L48 34" stroke="#0d0d0d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div class="nav-wordmark">
+      SKILL SAMURAI
+      <span>AI Makers Academy</span>
+    </div>
+  </div>
+  <a href="#enroll" class="nav-cta">Claim Your Free Class →</a>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-badge">Now Enrolling · Ages 6–18</div>
+
+    <h1 class="hero-headline">
+      <span class="thin">Your Child Won't</span>
+      <span class="accent">Just Learn AI.</span>
+      They'll Command It.
+    </h1>
+
+    <p class="hero-subhead">
+      While other kids swipe through AI, yours will be the one who builds it.
+    </p>
+
+    <p class="hero-body">
+      Skill Samurai is the <strong>AI Makers Academy</strong> where children ages 6–18 learn to design games, build apps, and create digital products using the same AI tools reshaping the world — guided by the timeless virtues of the Bushido code. No experience needed. Just sneakers and curiosity.
+    </p>
+
+    <div class="hero-actions">
+      <a href="#enroll" class="btn-primary">
+        🎯 Claim Your First Class Free <span class="arrow">→</span>
+      </a>
+      <div class="hero-trust">
+        <div class="hero-trust-icons">
+          <div class="trust-avatar">M</div>
+          <div class="trust-avatar">J</div>
+          <div class="trust-avatar">S</div>
+          <div class="trust-avatar">R</div>
+        </div>
+        <span>Joined by 2,400+ families this year · No contracts · Cancel anytime</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-visual">
+      <svg class="mon-large" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="90" cy="90" r="86" fill="rgba(255,255,255,0.04)" stroke="#c9962a" stroke-width="1.5"/>
+        <circle cx="90" cy="90" r="70" fill="none" stroke="rgba(201,150,42,0.2)" stroke-width="1"/>
+        <path d="M90 20 L112 50 L145 45 L128 74 L140 108 L108 97 L90 125 L72 97 L40 108 L52 74 L35 45 L68 50 Z" fill="none" stroke="#c8202c" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="90" cy="90" r="20" fill="rgba(201,150,42,0.15)" stroke="#c9962a" stroke-width="1.5"/>
+        <text x="90" y="98" font-family="serif" font-size="22" fill="#c9962a" text-anchor="middle">武</text>
+      </svg>
+
+      <div class="project-cards">
+        <div class="project-card">
+          <div class="project-card-emoji">🎮</div>
+          <div class="project-card-title">Space Defender</div>
+          <div class="project-card-sub">Built by Maya, age 9</div>
+          <div class="project-card-badge">White Belt</div>
+        </div>
+        <div class="project-card">
+          <div class="project-card-emoji">📱</div>
+          <div class="project-card-title">School Helper App</div>
+          <div class="project-card-sub">Built by Liam, age 12</div>
+          <div class="project-card-badge">Blue Belt</div>
+        </div>
+        <div class="project-card">
+          <div class="project-card-emoji">🎨</div>
+          <div class="project-card-title">AI Comic Strip</div>
+          <div class="project-card-sub">Built by Sofia, age 7</div>
+          <div class="project-card-badge">White Belt</div>
+        </div>
+        <div class="project-card">
+          <div class="project-card-emoji">🤖</div>
+          <div class="project-card-title">Homework Bot</div>
+          <div class="project-card-sub">Built by Ethan, age 14</div>
+          <div class="project-card-badge">Black Belt</div>
+        </div>
+      </div>
+
+      <div class="hero-stat-row">
+        <div class="hero-stat">
+          <span class="hero-stat-num">11</span>
+          <span class="hero-stat-label">Years Teaching</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-num">5</span>
+          <span class="hero-stat-label">Belt Levels</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-num">7</span>
+          <span class="hero-stat-label">Bushido Virtues</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROBLEM MARQUEE BAR ─── -->
+<div class="problem-bar">
+  <div class="problem-bar-label">What Kids Are NOT Learning Elsewhere</div>
+  <div class="problem-bar-items">
+    <div class="problem-item">How to use AI as a creative tool</div>
+    <div class="problem-item">How to build real things, not just tutorials</div>
+    <div class="problem-item">How to think like a problem-solver</div>
+    <div class="problem-item">How to direct AI, not just follow it</div>
+    <div class="problem-item">How to ship and present their own work</div>
+    <div class="problem-item">How to use AI as a creative tool</div>
+    <div class="problem-item">How to build real things, not just tutorials</div>
+    <div class="problem-item">How to think like a problem-solver</div>
+    <div class="problem-item">How to direct AI, not just follow it</div>
+    <div class="problem-item">How to ship and present their own work</div>
+  </div>
+</div>
+
+<!-- ─── BENEFITS ─── -->
+<section class="benefits">
+  <div class="benefits-intro reveal">
+    <div class="section-label" style="justify-content:center">Why Skill Samurai Is Different</div>
+    <h2>Three Reasons Parents Switch<br>and Never Look Back</h2>
+    <p>Every coding program teaches kids to code. We teach them to <em>build</em>, to <em>think</em>, and to <em>lead</em> — using the tools that are actually reshaping the world.</p>
+  </div>
+
+  <!-- BENEFIT 1 -->
+  <div class="benefit-block reveal">
+    <div class="benefit-visual benefit-visual-1">
+      <div class="benefit-visual-inner">
+        <span class="benefit-icon-large">🚀</span>
+        <p style="color:rgba(255,255,255,0.5);font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1.25rem;">Real Projects Your Kid Can Show Anyone</p>
+        <div class="project-cards" style="max-width:280px">
+          <div class="project-card">
+            <div class="project-card-emoji">🌐</div>
+            <div class="project-card-title">My Portfolio Site</div>
+            <div class="project-card-badge">Week 2</div>
+          </div>
+          <div class="project-card">
+            <div class="project-card-emoji">🎮</div>
+            <div class="project-card-title">Platformer Game</div>
+            <div class="project-card-badge">Week 4</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="benefit-content">
+      <span class="benefit-num">01</span>
+      <div class="section-label">Ship Something Real</div>
+      <h3>They Leave Every Session<br>with Something <em>They Built.</em></h3>
+      <p>
+        At Skill Samurai, we have one rule: <strong>no empty tutorials.</strong> Every 8-week module ends with a project your child can show at the dinner table, send to grandma, or post online — a real game, a working app prototype, an animated story, a digital business.
+      </p>
+      <p>
+        Using AI tools like Canva AI for art, Replit for code, and Bolt.new for apps, students don't just learn <em>about</em> technology — they use technology to <strong>make something they're genuinely proud of.</strong>
+      </p>
+      <div class="benefit-proof-box">
+        <p>"By week two, my 9-year-old had built a game and was explaining it to our neighbors. That had never happened in two years of other coding programs."</p>
+        <cite>— Parent of Maya G., White Belt · Raleigh, NC</cite>
+      </div>
+    </div>
+  </div>
+
+  <!-- BENEFIT 2 -->
+  <div class="benefit-block reverse reveal">
+    <div class="benefit-visual benefit-visual-2">
+      <div class="benefit-visual-inner">
+        <p style="color:rgba(255,255,255,0.4);font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:1.5rem;">The 7 Virtues of Bushido</p>
+        <ul class="virtue-list">
+          <li><span class="virtue-kanji">義</span> Rectitude — Doing what is right</li>
+          <li><span class="virtue-kanji">勇</span> Courage — Shipping imperfect work</li>
+          <li><span class="virtue-kanji">仁</span> Benevolence — Building for others</li>
+          <li><span class="virtue-kanji">礼</span> Respect — For peers and process</li>
+          <li><span class="virtue-kanji">誠</span> Honesty — Owning mistakes</li>
+          <li><span class="virtue-kanji">名</span> Honor — Excellence as a standard</li>
+          <li><span class="virtue-kanji">忠</span> Loyalty — Showing up</li>
+        </ul>
+      </div>
+    </div>
+    <div class="benefit-content">
+      <span class="benefit-num">02</span>
+      <div class="section-label">Character Meets Craft</div>
+      <h3>We Don't Just Teach Tech.<br>We Build <em>Character.</em></h3>
+      <p>
+        The 7 virtues of Bushido — the ancient warrior code — aren't decoration. They're baked into every project, every class, and every belt advancement. When a student pushes through a bug and finally ships their game, <strong>that's Courage.</strong> When they build an app for a family member, <strong>that's Benevolence.</strong>
+      </p>
+      <p>
+        In a world where AI can generate anything, <strong>character and judgment are the irreplaceable human edge.</strong> We teach both — and parents tell us the virtues show up at home, at school, and everywhere else.
+      </p>
+      <ul class="check-list">
+        <li>Each belt level is tied to a Bushido virtue, not just a technical skill</li>
+        <li>Students reflect on their virtue practice in every session</li>
+        <li>Belt ceremonies celebrate growth in both craft and character</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- BENEFIT 3 -->
+  <div class="benefit-block reveal">
+    <div class="benefit-visual benefit-visual-3">
+      <div class="benefit-visual-inner">
+        <p style="color:rgba(255,255,255,0.4);font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:1.5rem;">Your Child's Learning Path</p>
+        <div class="belt-display">
+          <span class="belt belt-white">White</span>
+          <span class="belt belt-yellow">Yellow</span>
+          <span class="belt belt-green">Green</span>
+          <span class="belt belt-blue">Blue</span>
+          <span class="belt belt-black">Black</span>
+        </div>
+        <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;line-height:1.8;text-align:left;margin-top:1rem;">
+          <div>🎨 AI Storytelling & Game Art · <span style="color:var(--gold-light)">Ages 6–8</span></div>
+          <div>🎮 Vibe Coding & Game Building · <span style="color:var(--gold-light)">Ages 8–10</span></div>
+          <div>📱 App Prototyping · <span style="color:var(--gold-light)">Ages 10–12</span></div>
+          <div>⚙️ AI Tools + Prompt Engineering · <span style="color:var(--gold-light)">Ages 12–14</span></div>
+          <div>🚀 AI Startup Sprint · <span style="color:var(--gold-light)">Ages 14–18</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="benefit-content">
+      <span class="benefit-num">03</span>
+      <div class="section-label">Right Here. Right Price.</div>
+      <h3>Elite AI Education in<br><em>Your</em> Neighborhood.</h3>
+      <p>
+        The best coding programs in America are clustered in wealthy suburbs and require $200+/month with multi-month contracts. We've built something different: <strong>a high-quality, AI-native program that meets your family where you are.</strong>
+      </p>
+      <p>
+        Classes are held in community spaces — church gyms, school rooms, library halls — which keeps our costs (and your fees) dramatically lower. <strong>No commute. No intimidating "tech center." Just a community of makers in a space you already trust.</strong>
+      </p>
+      <ul class="check-list">
+        <li>Flat monthly fee from $99 — no registration fees, no equipment needed</li>
+        <li>Siblings get discounted enrollment automatically</li>
+        <li>No long-term contracts — stay because your kid loves it</li>
+        <li>Free first class, no commitment</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ─── -->
+<section class="how-it-works">
+  <div class="hiw-inner">
+    <div class="hiw-header reveal">
+      <div class="section-label" style="justify-content:center;color:var(--gold)">Getting Started Is Simple</div>
+      <h2>From Curious Kid to Confident Builder in 4 Steps</h2>
+      <p>We've removed every barrier. All your child needs is a curious mind — and sneakers.</p>
+    </div>
+    <div class="steps-grid reveal">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h4>Claim Your Free Class</h4>
+        <p>No credit card. No commitment. Just show up and see what your child is capable of making.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h4>We Place Them in the Right Belt Level</h4>
+        <p>A quick 5-minute chat tells us where to start — whether they've never touched a computer or they've been coding for years.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h4>They Build Something Real</h4>
+        <p>Every 8-week module ends with a project they own, can share, and are genuinely proud of. Watch them light up at Demo Day.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h4>They Earn Their Next Belt</h4>
+        <p>Progress is visible, celebrated, and meaningful. Each belt represents real skills and real character growth — not just hours logged.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SOCIAL PROOF ─── -->
+<section class="social-proof">
+  <div class="proof-header reveal">
+    <div class="section-label" style="justify-content:center">Real Families. Real Results.</div>
+    <h2>What Parents Are Saying</h2>
+    <p>We let the work — and the kids — speak for themselves.</p>
+  </div>
+
+  <div class="testimonials-grid reveal">
+    <div class="testimonial featured">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"I've tried three other coding programs. The difference with Skill Samurai isn't the technology — it's that my son actually <em>made something.</em> Not a tutorial. A real game that his friends downloaded and played. He went from refusing to do homework to staying up late to 'level up his build.' Whatever they're doing, it works."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">😊</div>
+        <div class="author-info">
+          <span class="author-name">Jennifer T.</span>
+          <span class="author-detail">Mom of Marcus, 11 · Enrolled 14 months</span>
+        </div>
+        <div class="author-belt">Blue Belt Student</div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"My daughter is 7. She made a game for her little brother's birthday. She presented it to the whole family like a CEO. I have never seen her that proud of herself."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">👩</div>
+        <div class="author-info">
+          <span class="author-name">Rachel M.</span>
+          <span class="author-detail">Mom of Lily, 7 · Charlotte, NC</span>
+        </div>
+        <div class="author-belt">White Belt</div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"We live 45 minutes from the nearest 'real' coding school. Skill Samurai came to our community center and it's the best thing that's happened to our neighborhood kids this year."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">👨</div>
+        <div class="author-info">
+          <span class="author-name">Carlos R.</span>
+          <span class="author-detail">Dad of twins, 10 · Rural Ohio</span>
+        </div>
+        <div class="author-belt">Yellow Belt</div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"The Bushido virtues sound like a gimmick until you hear your 10-year-old explain why 'honesty means telling your teacher when you used AI to help, not to replace your thinking.' That's the conversation I needed."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">👩</div>
+        <div class="author-info">
+          <span class="author-name">Priya K.</span>
+          <span class="author-detail">Mom of Rohan, 10 · Austin, TX</span>
+        </div>
+        <div class="author-belt">Yellow Belt</div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"At $109/month for two kids with the sibling discount, this is the single best value enrichment program we've ever found. And it's the only one they've ever asked to go back to."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">👨</div>
+        <div class="author-info">
+          <span class="author-name">David & Amy S.</span>
+          <span class="author-detail">Parents of 3 · Phoenix, AZ</span>
+        </div>
+        <div class="author-belt">3 Active Students</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TRUST STRIP ─── -->
+<div class="trust-strip reveal">
+  <div class="trust-item">
+    <div class="trust-item-icon">🏅</div>
+    <div class="trust-item-text">
+      STEM Certified Curriculum
+      <span>Aligned to CSTA standards</span>
+    </div>
+  </div>
+  <div class="trust-item">
+    <div class="trust-item-icon">📋</div>
+    <div class="trust-item-text">
+      Background-Checked Instructors
+      <span>Credentialed educators only</span>
+    </div>
+  </div>
+  <div class="trust-item">
+    <div class="trust-item-icon">🔒</div>
+    <div class="trust-item-text">
+      No Contracts. Ever.
+      <span>Stay because they love it</span>
+    </div>
+  </div>
+  <div class="trust-item">
+    <div class="trust-item-icon">💻</div>
+    <div class="trust-item-text">
+      No Equipment Needed
+      <span>Just sneakers &amp; curiosity</span>
+    </div>
+  </div>
+  <div class="trust-item">
+    <div class="trust-item-icon">📅</div>
+    <div class="trust-item-text">
+      Free First Class
+      <span>Zero commitment, zero risk</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── RESULTS ─── -->
+<div class="results-section reveal">
+  <div class="results-inner">
+    <h2>The Numbers Behind 11 Years of Making Young Builders</h2>
+    <div class="results-stats">
+      <div class="result-stat">
+        <span class="result-stat-num">94%</span>
+        <div class="result-stat-text">of students build a shareable project in their first 8-week session</div>
+      </div>
+      <div class="result-stat">
+        <span class="result-stat-num">3×</span>
+        <div class="result-stat-text">longer average enrollment vs. national coding franchise average</div>
+      </div>
+      <div class="result-stat">
+        <span class="result-stat-num">78%</span>
+        <div class="result-stat-text">of enrolled families refer at least one friend or neighbor</div>
+      </div>
+      <div class="result-stat">
+        <span class="result-stat-num">100%</span>
+        <div class="result-stat-text">of instructors are former classroom educators with real teaching credentials</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── FAQ ─── -->
+<section class="faq">
+  <div class="faq-inner">
+    <div class="faq-header reveal">
+      <div class="section-label" style="justify-content:center">Common Questions</div>
+      <h2>Real Answers for Real Parents</h2>
+      <p>We've heard these before. Here's the truth, no marketing spin.</p>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        My child has zero coding experience. Is this really for them?
+        <span class="faq-toggle">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Absolutely — and honestly, <strong>complete beginners often learn the fastest here</strong> because they have no bad habits to unlearn. Our White Belt level starts with AI storytelling and game art, where your child describes what they want to create and AI helps bring it to life. They're making real things from day one, no prior experience required. The first class is free so you can see for yourself before spending a cent.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        How is this different from YouTube tutorials or apps like Scratch?
+        <span class="faq-toggle">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Three things make the difference: <strong>a real human instructor, real accountability, and real outcomes.</strong> YouTube can teach skills, but it can't celebrate your child's breakthrough, push them past a frustrating bug, or build the relationships that make learning sticky. Scratch teaches block-based coding — foundational, but frozen in 2010. We use the AI tools that professionals actually use today: Replit, Canva AI, Cursor, and more. And every session has a finish line — something to ship, share, and be proud of. No tutorial ends with a Demo Day where your kid presents to a room full of proud parents.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        What exactly are the "7 Virtues of Bushido" and why do they matter?
+        <span class="faq-toggle">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Bushido is the ancient samurai code of conduct — a framework for excellence and ethical behavior that has guided warriors and craftspeople for centuries. We apply the 7 virtues — Rectitude, Courage, Benevolence, Respect, Honesty, Honor, and Loyalty — as a <strong>living framework for how students approach their work and each other.</strong> Courage means shipping a project even when it's imperfect. Benevolence means building something for someone else. Honesty means owning when AI did the heavy lifting versus when your thinking led the way. These aren't slogans — they're practiced and reflected on in every class. Parents consistently tell us the virtues "leak out" into other areas of their child's life.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Will AI make coding skills irrelevant? Why bother learning this now?
+        <span class="faq-toggle">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          This is the most important question parents ask, and here's the honest answer: <strong>AI raises the stakes for kids who understand how to use it, and eliminates opportunities for those who don't.</strong> The children who will thrive in the next decade aren't the ones who can type fastest — they're the ones who know how to think clearly, direct AI tools effectively, spot errors in AI output, and build things that actually work. That's exactly what we teach. Think of it like driving: GPS exists, but you still need to know how to drive. We teach kids to be the driver, not the passenger.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        How much does it cost and what's included?
+        <span class="faq-toggle">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Monthly enrollment starts at <strong>$99/month</strong>, which includes two sessions per week, all curriculum materials, access to our AI tool suite, and participation in quarterly Demo Days. Siblings receive automatic discounts. There are <strong>no registration fees, no equipment to purchase, no uniform to buy</strong> — just sneakers and a curious kid. And there's no contract — we believe programs should earn continued enrollment by being great, not by locking families in. Try the first class free and decide from there.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Where exactly are classes held? Do I have to drive far?
+        <span class="faq-toggle">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          We intentionally operate in community spaces — <strong>church gyms, school meeting rooms, library halls, and community centers</strong> — places your family already knows and trusts. This keeps our costs (and your fees) dramatically lower than programs locked into expensive retail leases, and it means we can reach communities that larger programs never will. When you sign up, we'll show you the exact location nearest you. Classes are typically on Saturday mornings and one weekday afternoon.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        My child already knows some coding. Will they be bored?
+        <span class="faq-toggle">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Great news — experienced coders typically love Skill Samurai <strong>more</strong> than beginners do, because they immediately see the power of combining what they already know with AI tools. A kid who can write Python and suddenly learns to use Cursor AI is like a carpenter who just got a power saw. We'll place them in the right belt level from day one, and experienced students often become informal mentors in sessions — which is one of the most powerful learning experiences we offer.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── MAIN CTA ─── -->
+<section class="cta-section" id="enroll">
+  <div class="cta-inner">
+    <div class="section-label" style="justify-content:center;color:var(--gold)">Zero Risk · Free First Class</div>
+
+    <h2>
+      Give Your Child the<br>
+      <span class="gold">Unfair Advantage</span><br>
+      They Deserve.
+    </h2>
+
+    <p>
+      Join 2,400+ families who decided their kids would be builders, not bystanders. The first class is completely free. No card required. No commitment. Just show up.
+    </p>
+
+    <div class="cta-form">
+      <input type="email" class="cta-input" placeholder="Your email address">
+      <button class="cta-submit">Claim Free Class →</button>
+    </div>
+
+    <p class="cta-disclaimer">
+      By signing up, we'll contact you within 24 hours with available class times near you.<br>
+      No spam. No pressure. Your information is never shared.
+    </p>
+
+    <div class="cta-alt-options">
+      <h3>Other ways to get started</h3>
+      <div class="alt-cta-grid">
+        <a href="#" class="alt-cta">
+          <span class="alt-cta-icon">📅</span>
+          <span class="alt-cta-title">Schedule a 15-Minute Call</span>
+          <span class="alt-cta-sub">Talk to a real parent-educator who can answer your specific questions</span>
+        </a>
+        <a href="#" class="alt-cta">
+          <span class="alt-cta-icon">🎬</span>
+          <span class="alt-cta-title">Watch a Class in Action</span>
+          <span class="alt-cta-sub">3-minute video showing exactly what a Skill Samurai session looks like</span>
+        </a>
+        <a href="#" class="alt-cta">
+          <span class="alt-cta-icon">🗺️</span>
+          <span class="alt-cta-title">Find a Location Near Me</span>
+          <span class="alt-cta-sub">See which community spaces host classes in your area this month</span>
+        </a>
+        <a href="#" class="alt-cta">
+          <span class="alt-cta-icon">🎁</span>
+          <span class="alt-cta-title">Buy a Gift Enrollment</span>
+          <span class="alt-cta-sub">Give a month of AI Maker classes as a birthday or holiday gift</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-logo">SKILL SAMURAI ⚔ AI MAKERS ACADEMY</div>
+  <div class="footer-links">
+    <a href="#">About</a>
+    <a href="#">Curriculum</a>
+    <a href="#">Locations</a>
+    <a href="#">Franchise</a>
+    <a href="#">Privacy</a>
+  </div>
+  <div style="font-size:0.7rem;color:rgba(255,255,255,0.2)">© 2025 Skill Samurai. All rights reserved.</div>
+</footer>
+
+<script>
+  // FAQ Toggle
+  function toggleFaq(btn) {
+    const item = btn.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // Scroll Reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Stagger child reveals in grids
+  document.querySelectorAll('.testimonials-grid, .steps-grid, .results-stats, .alt-cta-grid').forEach(grid => {
+    grid.querySelectorAll(':scope > *').forEach((child, i) => {
+      child.style.transitionDelay = `${i * 0.1}s`;
+    });
+  });
+</script>
+</body>
+</html>
