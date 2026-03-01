@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Users, Calendar } from 'lucide-react';
+import { Plus, Edit, Users, Calendar, Share2, Zap } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -13,12 +13,15 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import CampForm from '../../components/owner/CampForm';
+import SocialMediaManager from '../../components/owner/SocialMediaManager';
 import { format } from 'date-fns';
+import { socialSettingsApi } from '@/lib/supabase/socialMediaApi';
 
 export default function OwnerCamps() {
   const [user, setUser] = useState(null);
   const [showCampForm, setShowCampForm] = useState(false);
   const [editingCamp, setEditingCamp] = useState(null);
+  const [socialCamp, setSocialCamp] = useState(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -43,6 +46,20 @@ export default function OwnerCamps() {
     queryKey: ['camp-bookings'],
     queryFn: () => api.entities.CampBooking.list(),
   });
+
+  // Load social settings to drive spaces-left badges on camp cards
+  const campIds = camps.map((c) => c.id);
+  const { data: allSocialSettings = [] } = useQuery({
+    queryKey: ['social-settings-bulk', campIds.join(',')],
+    queryFn: () => socialSettingsApi.getForCampIds(campIds),
+    enabled: campIds.length > 0,
+  });
+
+  const socialSettingsMap = React.useMemo(() => {
+    const map = {};
+    allSocialSettings.forEach((s) => { map[s.camp_id] = s; });
+    return map;
+  }, [allSocialSettings]);
 
   const handleAddCamp = () => {
     setEditingCamp(null);
@@ -97,6 +114,14 @@ export default function OwnerCamps() {
               const confirmedCount = campBookings.filter(b => b.status === 'confirmed').length;
               const percentFull = camp.capacity > 0 ? (confirmedCount / camp.capacity) * 100 : 0;
 
+              const campSocial = socialSettingsMap[camp.id];
+              const spacesRemaining = (camp.capacity || 0) - confirmedCount;
+              const showSpacesBadge =
+                campSocial?.show_spaces_left &&
+                spacesRemaining > 0 &&
+                spacesRemaining <= (campSocial.spaces_left_threshold || 5);
+              const spacesCritical = spacesRemaining <= 2;
+
               return (
                 <Card key={camp.id} className="border-0 shadow-lg hover:shadow-xl transition-all overflow-hidden group">
                   <div className="h-2 bg-gradient-to-r from-[#EE3E86] to-[#A3DAE8]" />
@@ -106,7 +131,7 @@ export default function OwnerCamps() {
                       <Button
                         size="icon"
                         variant="ghost"
-                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
                         onClick={() => handleEditCamp(camp)}
                       >
                         <Edit className="w-4 h-4" />
@@ -135,25 +160,50 @@ export default function OwnerCamps() {
                         <span className="font-semibold text-[#2A4169]">{percentFull.toFixed(0)}%</span>
                       </div>
                       <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                        <div 
+                        <div
                           className="h-full bg-gradient-to-r from-[#EE3E86] to-[#A3DAE8] transition-all"
                           style={{ width: `${percentFull}%` }}
                         />
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-2">
-                      <Badge 
-                        className={camp.active 
-                          ? 'bg-green-100 text-green-700 border-0' 
-                          : 'bg-slate-100 text-slate-600 border-0'
-                        }
+                    {/* Spaces left badge */}
+                    {showSpacesBadge && (
+                      <div className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-full w-fit ${
+                        spacesCritical
+                          ? 'bg-red-100 text-red-700'
+                          : 'bg-amber-100 text-amber-700'
+                      }`}>
+                        <Zap className="w-3 h-3" />
+                        {spacesRemaining} space{spacesRemaining === 1 ? '' : 's'} left
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between pt-1">
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          className={camp.active
+                            ? 'bg-green-100 text-green-700 border-0'
+                            : 'bg-slate-100 text-slate-600 border-0'
+                          }
+                        >
+                          {camp.active ? 'Active' : 'Inactive'}
+                        </Badge>
+                        <span className="text-lg font-bold text-[#2A4169]">
+                          ${((camp.price || 0) / 100).toFixed(2)}
+                        </span>
+                      </div>
+
+                      {/* Social media button */}
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="gap-1.5 text-xs text-[#2A4169] border-[#2A4169]/20 hover:bg-[#2A4169]/5 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => setSocialCamp(camp)}
                       >
-                        {camp.active ? 'Active' : 'Inactive'}
-                      </Badge>
-                      <span className="text-lg font-bold text-[#2A4169]">
-                        ${((camp.price || 0) / 100).toFixed(2)}
-                      </span>
+                        <Share2 className="w-3.5 h-3.5" />
+                        Social
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -163,6 +213,7 @@ export default function OwnerCamps() {
         )}
       </div>
 
+      {/* Camp create / edit dialog */}
       <Dialog open={showCampForm} onOpenChange={setShowCampForm}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -170,12 +221,19 @@ export default function OwnerCamps() {
               {editingCamp ? 'Edit Camp' : 'Create New Camp'}
             </DialogTitle>
           </DialogHeader>
-          <CampForm 
-            camp={editingCamp} 
+          <CampForm
+            camp={editingCamp}
             onSuccess={handleFormClose}
           />
         </DialogContent>
       </Dialog>
+
+      {/* Social Media Manager dialog */}
+      <SocialMediaManager
+        camp={socialCamp}
+        open={!!socialCamp}
+        onClose={() => setSocialCamp(null)}
+      />
     </OwnerLayout>
   );
 }
