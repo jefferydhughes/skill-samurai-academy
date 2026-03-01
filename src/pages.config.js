@@ -63,6 +63,7 @@ import WaitlistDashboard from './pages/Owner/WaitlistDashboard.jsx';
 import CreateEvent from './pages/Owner/CreateEvent.jsx';
 import BadgeManager from './pages/Owner/BadgeManager.jsx';
 import BeaKidFranchise from './pages/Owner/BeaKidFranchise.jsx';
+import HeadOfficeAdmin from './pages/Owner/HeadOfficeAdmin.jsx';
 
 // Content Management
 import CurriculumBuilder from './pages/Content/CurriculumBuilder.jsx';
@@ -161,6 +162,7 @@ export const PAGES = {
   "CreateEvent": CreateEvent,
   "BadgeManager": BadgeManager,
   "BeaKidFranchise": BeaKidFranchise,
+  "HeadOfficeAdmin": HeadOfficeAdmin,
 
   // Content Management
   "CurriculumBuilder": CurriculumBuilder,
