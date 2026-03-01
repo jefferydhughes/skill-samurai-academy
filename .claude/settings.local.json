@@ -5,7 +5,10 @@
       "Bash(del \"c:\\\\Users\\\\jeff\\\\skill-samurai-academy\\\\src\\\\components\\\\api\\\\base44Client.jsx\")",
       "Bash(echo:*)",
       "Bash(npm run build:*)",
-      "Bash(node --input-type=module --eval:*)"
+      "Bash(node --input-type=module --eval:*)",
+      "mcp__cc61a093-bc22-4cad-b89e-ce9863d95e05__list_migrations",
+      "mcp__cc61a093-bc22-4cad-b89e-ce9863d95e05__apply_migration",
+      "mcp__cc61a093-bc22-4cad-b89e-ce9863d95e05__deploy_edge_function"
     ]
   }
 }

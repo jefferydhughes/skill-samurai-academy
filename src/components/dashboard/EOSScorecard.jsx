@@ -7,64 +7,131 @@ import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { api } from '@/api/apiClient';
+import { supabase } from '@/lib/supabase/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Target, Plus, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
+import { Target, Plus, CheckCircle2, AlertTriangle, XCircle, Trash2 } from 'lucide-react';
 
-export default function EOSScorecard({ rocks, location }) {
+const EMPTY_ROCK = (locationId) => ({
+  location_id: locationId,
+  quarter: `Q${Math.floor((new Date().getMonth() / 3)) + 1} ${new Date().getFullYear()}`,
+  owner_name: '',
+  title: '',
+  description: '',
+  target_date: '',
+  status: 'on_track',
+  completion_percentage: 0,
+  milestones: [],
+});
+
+export default function EOSScorecard({ rocks = [], location }) {
+  const { user } = useAuth();
   const [showRockForm, setShowRockForm] = useState(false);
   const [editingRock, setEditingRock] = useState(null);
-  const [formData, setFormData] = useState({
-    location_id: location?.id,
-    quarter: `Q${Math.floor((new Date().getMonth() / 3)) + 1} ${new Date().getFullYear()}`,
-    owner: '',
-    title: '',
-    description: '',
-    target_date: '',
-    status: 'on_track',
-    completion_percentage: 0
-  });
+  const [formData, setFormData] = useState(EMPTY_ROCK(location?.id));
+  const [newMilestone, setNewMilestone] = useState('');
 
   const queryClient = useQueryClient();
 
   const saveMutation = useMutation({
     mutationFn: async (data) => {
-      if (editingRock) {
-        return await api.entities.Rock.update(editingRock.id, data);
+      const record = {
+        location_id: data.location_id,
+        quarter: data.quarter,
+        title: data.title,
+        description: data.description,
+        owner_name: data.owner_name,
+        owner_user_id: user?.id,
+        target_date: data.target_date,
+        status: data.status,
+        completion_percentage: data.completion_percentage,
+        milestones: data.milestones || [],
+        updated_at: new Date().toISOString(),
+      };
+
+      if (editingRock?.id) {
+        const { data: updated, error } = await supabase
+          .from('eos_quarterly_rocks')
+          .update(record)
+          .eq('id', editingRock.id)
+          .select()
+          .single();
+        if (error) throw error;
+        return updated;
       } else {
-        return await api.entities.Rock.create(data);
+        const { data: created, error } = await supabase
+          .from('eos_quarterly_rocks')
+          .insert(record)
+          .select()
+          .single();
+        if (error) throw error;
+        return created;
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['rocks'] });
+      queryClient.invalidateQueries({ queryKey: ['eos-rocks'] });
       setShowRockForm(false);
       setEditingRock(null);
-      setFormData({
-        location_id: location?.id,
-        quarter: `Q${Math.floor((new Date().getMonth() / 3)) + 1} ${new Date().getFullYear()}`,
-        owner: '',
-        title: '',
-        description: '',
-        target_date: '',
-        status: 'on_track',
-        completion_percentage: 0
-      });
-    }
+      setFormData(EMPTY_ROCK(location?.id));
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (rockId) => {
+      const { error } = await supabase
+        .from('eos_quarterly_rocks')
+        .delete()
+        .eq('id', rockId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['eos-rocks'] });
+      setShowRockForm(false);
+      setEditingRock(null);
+    },
   });
 
   const getStatusBadge = (status) => {
-    switch (status) {
-      case 'completed':
-        return <Badge className="bg-green-500"><CheckCircle2 className="w-3 h-3 mr-1" />Completed</Badge>;
-      case 'on_track':
-        return <Badge className="bg-blue-500">On Track</Badge>;
-      case 'at_risk':
-        return <Badge className="bg-amber-500"><AlertTriangle className="w-3 h-3 mr-1" />At Risk</Badge>;
-      case 'off_track':
-        return <Badge className="bg-red-500"><XCircle className="w-3 h-3 mr-1" />Off Track</Badge>;
-      default:
-        return <Badge>Unknown</Badge>;
-    }
+    const configs = {
+      completed: { className: 'bg-green-500', icon: CheckCircle2, label: 'Completed' },
+      on_track: { className: 'bg-blue-500', icon: null, label: 'On Track' },
+      at_risk: { className: 'bg-amber-500', icon: AlertTriangle, label: 'At Risk' },
+      off_track: { className: 'bg-red-500', icon: XCircle, label: 'Off Track' },
+      dropped: { className: 'bg-slate-400', icon: null, label: 'Dropped' },
+    };
+    const config = configs[status] || configs.on_track;
+    const Icon = config.icon;
+    return (
+      <Badge className={config.className}>
+        {Icon && <Icon className="w-3 h-3 mr-1" />}
+        {config.label}
+      </Badge>
+    );
+  };
+
+  const addMilestone = () => {
+    if (!newMilestone.trim()) return;
+    setFormData(prev => ({
+      ...prev,
+      milestones: [...(prev.milestones || []), { title: newMilestone, completed: false }],
+    }));
+    setNewMilestone('');
+  };
+
+  const toggleMilestone = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      milestones: prev.milestones.map((m, i) =>
+        i === index ? { ...m, completed: !m.completed } : m
+      ),
+    }));
+  };
+
+  const removeMilestone = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      milestones: prev.milestones.filter((_, i) => i !== index),
+    }));
   };
 
   const completedRocks = rocks.filter(r => r.status === 'completed').length;
@@ -82,7 +149,7 @@ export default function EOSScorecard({ rocks, location }) {
           </h2>
           <p className="text-slate-600 mt-1">Your 3-5 most important priorities this quarter</p>
         </div>
-        <Button onClick={() => setShowRockForm(true)} className="bg-indigo-600 hover:bg-indigo-700">
+        <Button onClick={() => { setEditingRock(null); setFormData(EMPTY_ROCK(location?.id)); setShowRockForm(true); }} className="bg-indigo-600 hover:bg-indigo-700">
           <Plus className="w-4 h-4 mr-2" />
           Add Rock
         </Button>
@@ -108,7 +175,10 @@ export default function EOSScorecard({ rocks, location }) {
           <Card key={rock.id} className="border-0 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
             onClick={() => {
               setEditingRock(rock);
-              setFormData(rock);
+              setFormData({
+                ...rock,
+                milestones: rock.milestones || [],
+              });
               setShowRockForm(true);
             }}>
             <CardHeader>
@@ -116,8 +186,8 @@ export default function EOSScorecard({ rocks, location }) {
                 <div className="flex-1">
                   <CardTitle className="text-lg mb-2">{rock.title}</CardTitle>
                   <div className="flex items-center gap-2 text-sm text-slate-600">
-                    <span>Owner: {rock.owner}</span>
-                    <span>•</span>
+                    <span>Owner: {rock.owner_name}</span>
+                    <span>-</span>
                     <span>Due: {new Date(rock.target_date).toLocaleDateString()}</span>
                   </div>
                 </div>
@@ -125,8 +195,10 @@ export default function EOSScorecard({ rocks, location }) {
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-slate-600 mb-4">{rock.description}</p>
-              
+              {rock.description && (
+                <p className="text-sm text-slate-600 mb-4">{rock.description}</p>
+              )}
+
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-slate-600">Progress</span>
@@ -157,6 +229,16 @@ export default function EOSScorecard({ rocks, location }) {
             </CardContent>
           </Card>
         ))}
+
+        {rocks.length === 0 && (
+          <Card className="border-dashed border-2 col-span-full">
+            <CardContent className="p-12 text-center text-slate-500">
+              <Target className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+              <p className="font-medium">No rocks yet this quarter</p>
+              <p className="text-sm mt-1">Add 3-5 critical priorities to track</p>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Rock Form Dialog */}
@@ -168,9 +250,9 @@ export default function EOSScorecard({ rocks, location }) {
           <form onSubmit={(e) => { e.preventDefault(); saveMutation.mutate(formData); }} className="space-y-4">
             <div>
               <Label>Rock Title *</Label>
-              <Input 
+              <Input
                 value={formData.title}
-                onChange={(e) => setFormData({...formData, title: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 placeholder="e.g., Increase active members to 120"
                 required
               />
@@ -180,7 +262,7 @@ export default function EOSScorecard({ rocks, location }) {
               <Label>Description</Label>
               <Textarea
                 value={formData.description}
-                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={3}
                 placeholder="What does done look like?"
               />
@@ -190,8 +272,8 @@ export default function EOSScorecard({ rocks, location }) {
               <div>
                 <Label>Owner *</Label>
                 <Input
-                  value={formData.owner}
-                  onChange={(e) => setFormData({...formData, owner: e.target.value})}
+                  value={formData.owner_name}
+                  onChange={(e) => setFormData({ ...formData, owner_name: e.target.value })}
                   placeholder="Person responsible"
                   required
                 />
@@ -201,7 +283,7 @@ export default function EOSScorecard({ rocks, location }) {
                 <Input
                   type="date"
                   value={formData.target_date}
-                  onChange={(e) => setFormData({...formData, target_date: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, target_date: e.target.value })}
                   required
                 />
               </div>
@@ -212,13 +294,14 @@ export default function EOSScorecard({ rocks, location }) {
                 <Label>Status</Label>
                 <select
                   value={formData.status}
-                  onChange={(e) => setFormData({...formData, status: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                   className="w-full px-3 py-2 border rounded-lg"
                 >
                   <option value="on_track">On Track</option>
                   <option value="at_risk">At Risk</option>
                   <option value="off_track">Off Track</option>
                   <option value="completed">Completed</option>
+                  <option value="dropped">Dropped</option>
                 </select>
               </div>
               <div>
@@ -228,14 +311,59 @@ export default function EOSScorecard({ rocks, location }) {
                   min="0"
                   max="100"
                   value={formData.completion_percentage}
-                  onChange={(e) => setFormData({...formData, completion_percentage: parseInt(e.target.value)})}
+                  onChange={(e) => setFormData({ ...formData, completion_percentage: parseInt(e.target.value) || 0 })}
                 />
               </div>
             </div>
 
-            <Button type="submit" disabled={saveMutation.isPending} className="w-full">
-              {saveMutation.isPending ? 'Saving...' : 'Save Rock'}
-            </Button>
+            {/* Milestones */}
+            <div>
+              <Label>Milestones</Label>
+              <div className="space-y-2 mt-2">
+                {(formData.milestones || []).map((m, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <button type="button" onClick={() => toggleMilestone(i)} className="flex-shrink-0">
+                      {m.completed ? (
+                        <CheckCircle2 className="w-5 h-5 text-green-500" />
+                      ) : (
+                        <div className="w-5 h-5 rounded-full border-2 border-slate-300" />
+                      )}
+                    </button>
+                    <span className={`flex-1 text-sm ${m.completed ? 'line-through text-slate-400' : ''}`}>
+                      {m.title}
+                    </span>
+                    <button type="button" onClick={() => removeMilestone(i)} className="text-slate-400 hover:text-red-500">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+                <div className="flex gap-2">
+                  <Input
+                    value={newMilestone}
+                    onChange={(e) => setNewMilestone(e.target.value)}
+                    placeholder="Add a milestone..."
+                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addMilestone(); } }}
+                  />
+                  <Button type="button" variant="outline" size="sm" onClick={addMilestone}>Add</Button>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <Button type="submit" disabled={saveMutation.isPending} className="flex-1">
+                {saveMutation.isPending ? 'Saving...' : 'Save Rock'}
+              </Button>
+              {editingRock?.id && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={() => { if (confirm('Delete this rock?')) deleteMutation.mutate(editingRock.id); }}
+                  disabled={deleteMutation.isPending}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              )}
+            </div>
           </form>
         </DialogContent>
       </Dialog>
