@@ -10,9 +10,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Calendar, Plus, Edit, Trash2, Zap, Clock, Users, CheckCircle } from 'lucide-react';
+import { Calendar, Plus, Edit, Trash2, Zap, Clock, Users, CheckCircle, User } from 'lucide-react';
 import { addWeeks, startOfWeek, addDays, isWithinInterval } from 'date-fns';
 import BlackoutDateManager from '@/components/scheduling/BlackoutDateManager';
+import { instructorsApi } from '@/lib/supabase/punchpassApi';
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -41,6 +42,20 @@ export default function WeeklyScheduleManager() {
   const { data: blackoutDates = [] } = useQuery({
     queryKey: ['blackoutDates'],
     queryFn: () => api.entities.BlackoutDate.list(),
+  });
+
+  const { data: instructors = [] } = useQuery({
+    queryKey: ['instructors'],
+    queryFn: async () => {
+      // Load instructors for all locations; filter in SlotForm by location_id
+      const results = [];
+      for (const loc of locations) {
+        const locInstructors = await instructorsApi.getByLocation(loc.id);
+        results.push(...locInstructors);
+      }
+      return results;
+    },
+    enabled: locations.length > 0,
   });
 
   const saveMutation = useMutation({
@@ -240,6 +255,7 @@ export default function WeeklyScheduleManager() {
                   {daySlots.map((slot) => {
                     const location = locations.find(l => l.id === slot.location_id);
                     const program = programs.find(p => p.id === slot.program_id);
+                    const instructor = instructors.find(i => i.id === slot.instructor_id);
 
                     return (
                       <Card key={slot.id} className="hover:shadow-lg transition-shadow">
@@ -254,6 +270,12 @@ export default function WeeklyScheduleManager() {
                                 <Badge variant="outline" className="text-xs">
                                   {program?.name || 'Unknown Program'}
                                 </Badge>
+                                {instructor && (
+                                  <Badge variant="outline" className="text-xs bg-blue-50">
+                                    <User className="w-3 h-3 mr-1" />
+                                    {instructor.first_name}{instructor.last_name ? ` ${instructor.last_name}` : ''}
+                                  </Badge>
+                                )}
                                 {!slot.active && (
                                   <Badge variant="secondary" className="text-xs">Inactive</Badge>
                                 )}
@@ -310,6 +332,7 @@ export default function WeeklyScheduleManager() {
           slot={editingSlot}
           locations={locations}
           programs={programs}
+          instructors={instructors}
           onSave={(data) => saveMutation.mutate(data)}
           onClose={() => {
             setShowForm(false);
@@ -322,10 +345,11 @@ export default function WeeklyScheduleManager() {
   );
 }
 
-function SlotForm({ slot, locations, programs, onSave, onClose, isSaving }) {
+function SlotForm({ slot, locations, programs, instructors = [], onSave, onClose, isSaving }) {
   const [form, setForm] = useState({
     location_id: slot?.location_id || '',
     program_id: slot?.program_id || '',
+    instructor_id: slot?.instructor_id || '',
     weekday: slot?.weekday ?? 1,
     start_time: slot?.start_time || '16:00:00',
     duration_minutes: slot?.duration_minutes || 60,
@@ -336,9 +360,17 @@ function SlotForm({ slot, locations, programs, onSave, onClose, isSaving }) {
     active: slot?.active ?? true,
   });
 
+  // Filter instructors by selected location
+  const locationInstructors = form.location_id
+    ? instructors.filter(i => i.location_id === form.location_id)
+    : instructors;
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(form);
+    onSave({
+      ...form,
+      instructor_id: form.instructor_id || null,
+    });
   };
 
   return (
@@ -378,6 +410,22 @@ function SlotForm({ slot, locations, programs, onSave, onClose, isSaving }) {
                 <option value="">Select program</option>
                 {programs.map(prog => (
                   <option key={prog.id} value={prog.id}>{prog.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Instructor</label>
+              <select
+                value={form.instructor_id}
+                onChange={(e) => setForm({ ...form, instructor_id: e.target.value || null })}
+                className="input"
+              >
+                <option value="">No instructor</option>
+                {locationInstructors.map(inst => (
+                  <option key={inst.id} value={inst.id}>
+                    {inst.first_name}{inst.last_name ? ` ${inst.last_name}` : ''}
+                  </option>
                 ))}
               </select>
             </div>

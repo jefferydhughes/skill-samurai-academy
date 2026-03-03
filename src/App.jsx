@@ -4,7 +4,6 @@ import { queryClientInstance } from '@/lib/query-client'
 import VisualEditAgent from '@/lib/VisualEditAgent'
 import NavigationTracker from '@/lib/NavigationTracker'
 import { PWAProvider } from '@/lib/PWAContext'
-import PWAControls from '@/components/pwa/PWAControls'
 import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
@@ -93,7 +92,6 @@ function App() {
         <QueryClientProvider client={queryClientInstance}>
           <Router>
             <NavigationTracker />
-            <PWAControls />
             <AuthenticatedApp />
           </Router>
           <Toaster />

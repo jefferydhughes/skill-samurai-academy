@@ -39,6 +39,12 @@ const makeEntityInterface = (tableName) => ({
 
 export const base44 = {
   entities: {
-    Location: makeEntityInterface('locations'),
+    Location: makeEntityInterface('franchise_locations'),
+    Program: makeEntityInterface('programs'),
+    WeeklyClassSlot: makeEntityInterface('weekly_class_slots'),
+    Instructor: makeEntityInterface('instructors'),
+    Contact: makeEntityInterface('contacts'),
+    Student: makeEntityInterface('students'),
+    PassPurchase: makeEntityInterface('pass_purchases'),
   },
 };
