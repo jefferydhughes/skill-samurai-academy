@@ -4,6 +4,14 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
+      "source": "/franchise",
+      "destination": "/skill-samurai-franchise.html"
+    },
+    {
+      "source": "/landing",
+      "destination": "/skill-samurai-landing.html"
+    },
+    {
       "source": "/((?!api/|assets/|.*\\..*).*)",
       "destination": "/index.html"
     }
