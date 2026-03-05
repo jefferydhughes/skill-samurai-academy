@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:skillsamurai-rousehill.punchpass.com)",
+      "Bash(xargs grep -l \"skill\\\\|samurai\\\\|academy\")",
+      "Bash(npm install --save-dev csv-parse)",
+      "mcp__claude_ai_Supabase__execute_sql",
+      "mcp__claude_ai_Supabase__apply_migration",
+      "Bash(node scripts/import-punchpass.mjs --folder \"c:/Users/jeff/Downloads/RouseHill\" --name \"Skill Samurai Rouse Hill\" --slug rouse-hill --city \"Rouse Hill\" --state NSW --country Australia)"
+    ]
+  }
+}
