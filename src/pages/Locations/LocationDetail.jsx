@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { api } from '@/api/apiClient';
 import { supabase } from '@/lib/supabase/supabaseClient';
 import { useQuery } from '@tanstack/react-query';
 import { useLocationData } from '@/lib/LocationContext';
@@ -56,12 +55,26 @@ export default function LocationDetail() {
 
   const { data: programs = [] } = useQuery({
     queryKey: ['programs'],
-    queryFn: () => api.entities.Program.filter({ active: true }),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('programs')
+        .select('*')
+        .eq('active', true);
+      if (error) throw error;
+      return data ?? [];
+    },
   });
 
   const { data: slots = [] } = useQuery({
     queryKey: ['slots', location?.id],
-    queryFn: () => api.entities.WeeklyClassSlot.filter({ location_id: location?.id, active: true }),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('weekly_class_slots')
+        .select('*')
+        .eq('location_id', location.id);
+      if (error) throw error;
+      return data ?? [];
+    },
     enabled: !!location?.id,
   });
 
